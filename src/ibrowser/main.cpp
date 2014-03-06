@@ -1,56 +1,59 @@
-﻿// ibrowser
-#include "ibrowser/main.h"
-#include "ibrowser/myframe.h"
+﻿/****************************************************************************
+ *   Copyright (C) 2014 by Jerry			                           		*
+ *                                                                        	*
+ *   This file is part of IBrowser.                                        	*
+ *                                                                         	*
+ *   IBrowser is private software.                                         	*
+ *   program.  If not, see <https://github.com/jerrykk/IBrowser>.          	*
+ *                                                                         	*
+ *   IBrowser website: https://github.com/jerrykk/IBrowser                 	*
+ ****************************************************************************/
+
+// ibrowser
+#include "ibrowser/ibrowserapp.h"
 
 // vc
-#if WIN32
-#include <Windows.h>
-#endif
+#include <windows.h>
 
-namespace ibrowser
-{
-	// Constructors
-	MyApp::MyApp(){}
-	MyApp::~MyApp(){}
+// Set to 0 to disable sandbox support.
+#define CEF_ENABLE_SANDBOX 1
 
-	// private inherit
-	bool MyApp::OnInit()
-	{
-		wxPoint pos;
-		wxSize	size(1024, 768);
-		// GetFullWinInfo(pos, size);
-		MyFrame *frame = new MyFrame(NULL, -1, _("IBrowser"), 
-			pos, size);
-		frame->Show(true);
-		SetTopWindow(frame);
-		return true;
+// Entry point function for all processes.
+int APIENTRY wWinMain(HINSTANCE hInstance,
+					  HINSTANCE hPrevInstance,
+					  LPTSTR    lpCmdLine,
+					  int       nCmdShow) {
+	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
+
+	// Provide CEF with command-line arguments.
+	CefMainArgs main_args(hInstance);
+
+	// SimpleApp implements application-level callbacks. It will create the first
+	// browser instance in OnContextInitialized() after CEF has initialized.
+	CefRefPtr<ibrowser::IBrowserApp> app(new ibrowser::IBrowserApp);
+
+	// CEF applications have multiple sub-processes (render, plugin, GPU, etc)
+	// that share the same executable. This function checks the command-line and,
+	// if this is a sub-process, executes the appropriate logic.
+	int exit_code = CefExecuteProcess(main_args, app.get());
+	if (exit_code >= 0) {
+	  // The sub-process has completed so return here.
+	  return exit_code;
 	}
 
-	// private
-	void MyApp::GetFullWinInfo(wxPoint &pos, wxSize &size)
-	{
-#if WIN32
-		RECT clWorkAreaRect;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &clWorkAreaRect, 0); 
-		if(clWorkAreaRect.right && clWorkAreaRect.bottom)
-		{
-			int		width = clWorkAreaRect.right - clWorkAreaRect.left;
-			int		height = clWorkAreaRect.bottom - clWorkAreaRect.top;
-			size.SetWidth(width);
-			size.SetHeight(height);
-		}
+	// Specify CEF global settings here.
+	CefSettings settings;
 
-		// window position
-		if(clWorkAreaRect.top || clWorkAreaRect.left)
-		{
-			pos.x = clWorkAreaRect.left;
-			pos.y = clWorkAreaRect.top;
-		}
-#endif
-	}
+	// Initialize CEF.
+	CefInitialize(main_args, settings, app.get());
 
+	// Run the CEF message loop. This will block until CefQuitMessageLoop() is
+	// called.
+	CefRunMessageLoop();
+
+	// Shut down CEF.
+	CefShutdown();
+
+	return 0;
 }
-
-
-DECLARE_APP(ibrowser::MyApp)
-IMPLEMENT_APP(ibrowser::MyApp)
