@@ -71,9 +71,9 @@ if (NOT Boost_FOUND)
 	MESSAGE(FATAL_ERROR "--> Could not locate required Boost files - Please check ${BOOST_SEARCH_PATH}")
 endif()
 
-if (NOT wxWidgets_FOUND)
-	MESSAGE(FATAL_ERROR "--> Could not locate required wxWidgets files - Please check ${wxWidgets_ROOT_DIR}")
-endif()
+#if (NOT wxWidgets_FOUND)
+#	MESSAGE(FATAL_ERROR "--> Could not locate required wxWidgets files - Please check ${wxWidgets_ROOT_DIR}")
+#endif()
 
 set(IBROWSER_VERSION_MAJOR 0)
 set(IBROWSER_VERSION_MINOR 1)

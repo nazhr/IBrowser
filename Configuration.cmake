@@ -53,7 +53,7 @@ IF (NOT IBROWSER_NO_DEFAULT_CONFIG)
         SET(IBROWSER_DEP_DIRS $ENV{IBROWSER_DEP_DIRS})
         MESSAGE(STATUS "iBrowser build environment variables found")
         SET(BOOST_SEARCH_PATH       		"${IBROWSER_DEP_DIRS}/boost_1_53_0")
-		SET(wxWidgets_ROOT_DIR       		"${IBROWSER_DEP_DIRS}/wxWidgets-2.9.4")
+		#SET(wxWidgets_ROOT_DIR       		"${IBROWSER_DEP_DIRS}/wxWidgets-2.9.4")
 		#SET(CURL_SEARCH_PATH       			"${IBROWSER_DEP_DIRS}/curl-7.34.0")
     ENDIF(DEFINED ENV{IBROWSER_DEP_DIRS})
 

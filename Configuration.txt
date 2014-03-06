@@ -16,7 +16,7 @@
 依赖库 :
 	boost_1_53_0.zip
 	wxWidgets-2.9.4.zip
-	chromiumembedded(cef) 
+	cef_binary_3.1547.1412_windows32(chromiumembedded)
 	
 库编译 :
 	boost -- MT/MTd
