@@ -1,0 +1,19 @@
+开发环境 : 
+	win7 64bit vc2008
+	cmake
+
+依赖库 :
+	boost_1_53_0.zip
+	wxWidgets-2.9.4.zip
+	chromiumembedded(cef) 
+	
+库编译 :
+	boost -- MT/MTd
+	wxWidgets -- MT/MTd
+	CEF -- MT/MTd
+
+配置 :
+	
+	
+PS : 
+	gen_build.bat文件配置，修改引用库目录 。
