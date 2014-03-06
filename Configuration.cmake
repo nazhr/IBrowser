@@ -1,12 +1,13 @@
-#############################################################################
-#   Copyright (C) 2013 by sanpolo CO.LTD                                  	#
-#                                                                         	#
-#   This file is part of iBrowser.                                        	#
-#                                                                         	#
-#   iBrowser is private software.                                         	#
-#                                                                         	#
-#   iBrowser website:                          								#
-#############################################################################
+###########################################################################
+#   Copyright (C) 2014 by Jerry			                                  #
+#                                                                         #
+#   This file is part of IBrowser.                                        #
+#                                                                         #
+#   IBrowser is private software.                                         #
+#   program.  If not, see <https://github.com/jerrykk/IBrowser>.          #
+#                                                                         #
+#   IBrowser website: https://github.com/jerrykk/IBrowser                 #
+###########################################################################
 
 ###########################################################################
 #

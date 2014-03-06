@@ -1,19 +1,12 @@
 ###########################################################################
-#   Copyright (C) 2013 by sanpolo CO.LTD                                  #
+#   Copyright (C) 2014 by Jerry			                                  #
 #                                                                         #
-#   This file is part of GMEditor.                                        #
+#   This file is part of IBrowser.                                        #
 #                                                                         #
-#   GMEditor is free software; you can redistribute it and/or modify it   #
-#   under the terms of the LGPL License.                                  #
+#   IBrowser is private software.                                         #
+#   program.  If not, see <https://github.com/jerrykk/IBrowser>.          #
 #                                                                         #
-#   GMEditor is distributed in the hope that it will be useful,but WITHOUT#
-#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY    #
-#   or FITNESS FOR A PARTICULAR PURPOSE.                                  #
-#                                                                         #
-#   You should have received a copy of the LGPL License along with this   #
-#   program.  If not, see <http://www.render001.com/gmeditor/licenses>.   #
-#                                                                         #
-#   GMEditor website: http://www.render001.com/gmeditor                   #
+#   IBrowser website: https://github.com/jerrykk/IBrowser                 #
 ###########################################################################
 
 # Use relative paths

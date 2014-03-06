@@ -1,11 +1,12 @@
 ###########################################################################
-#   Copyright (C) 2013 by sanpolo CO.LTD                                  #
+#   Copyright (C) 2014 by Jerry			                                  #
 #                                                                         #
-#   This file is part of IBrowser.                                           #
+#   This file is part of IBrowser.                                        #
 #                                                                         #
-#   IBrowser is private software.                                            #
-#                                                                        #
-#   IBrowser website:                     #
+#   IBrowser is private software.                                         #
+#   program.  If not, see <https://github.com/jerrykk/IBrowser>.          #
+#                                                                         #
+#   IBrowser website: https://github.com/jerrykk/IBrowser                 #
 ###########################################################################
 
 MESSAGE(STATUS "CMAKE VERSION DETECTED " ${CMAKE_VERSION})
@@ -95,6 +96,7 @@ endif(NOT WIN32)
 
 add_subdirectory(src/ibrowser)
 #add_subdirectory(src/cefclient)
+#add_subdirectory(src/utils)
 
 ###########################################################################
 #

@@ -19,6 +19,9 @@ namespace ibrowser
 			const wxSize& size,
 			long style = wxSYSTEM_MENU |
 			wxCLOSE_BOX |
+			wxMAXIMIZE |
+			wxMINIMIZE_BOX |
+			wxMAXIMIZE_BOX |
 			wxCAPTION |
 			wxCLIP_CHILDREN | 
 			wxSUNKEN_BORDER);

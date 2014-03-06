@@ -1,27 +1,25 @@
 ###########################################################################
-#   Copyright (C) 2014 by Jerry			                                  #
+#   Copyright (C) 2014 by jerry			                                  #
 #                                                                         #
 #   This file is part of IBrowser.                                        #
 #                                                                         #
 #   IBrowser is private software.                                         #
+#                                                                         #
 #   program.  If not, see <https://github.com/jerrykk/IBrowser>.          #
 #                                                                         #
 #   IBrowser website: https://github.com/jerrykk/IBrowser                 #
 ###########################################################################
 
-###########################################################################
+#############################################################################
 #
-# Binary samples directory
+# utils library
 #
-###########################################################################
+#############################################################################
 
-IF (WIN32)
-	
-  # For MSVC moving exe files gets done automatically
-  # If there is someone compiling on windows and
-  # not using msvc (express is free) - feel free to implement
 
-ELSE (WIN32)
-	set(CMAKE_INSTALL_PREFIX .)
+set(UTILS_SRCS
+    
+   )
 
-ENDIF(WIN32)
+
+add_library(utils STATIC ${UTILS_SRCS})

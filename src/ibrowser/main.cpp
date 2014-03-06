@@ -16,9 +16,9 @@ namespace ibrowser
 	// private inherit
 	bool MyApp::OnInit()
 	{
-		wxPoint pos(0, 0);
-		wxSize	size(1440, 900);
-		GetFullWinInfo(pos, size);
+		wxPoint pos;
+		wxSize	size(1024, 768);
+		// GetFullWinInfo(pos, size);
 		MyFrame *frame = new MyFrame(NULL, -1, _("IBrowser"), 
 			pos, size);
 		frame->Show(true);

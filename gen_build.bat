@@ -1,3 +1,13 @@
+REM ###########################################################################
+REM #   Copyright (C) 2014 by Jerry			                                  #
+REM #                                                                         #
+REM #   This file is part of IBrowser.                                        #
+REM #                                                                         #
+REM #   IBrowser is private software.                                         #
+REM #   program.  If not, see <https://github.com/jerrykk/IBrowser>.          #
+REM #                                                                         #
+REM #   IBrowser website: https://github.com/jerrykk/IBrowser                 #
+REM ###########################################################################
 cd ../
 rmdir /S /Q ibrowser_build
 mkdir ibrowser_build
