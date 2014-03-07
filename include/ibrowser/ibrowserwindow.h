@@ -28,6 +28,10 @@ namespace ibrowser
 {
 
 #define MAX_LOADSTRING 100
+#define MAX_LOADSTRING 100
+#define MAX_URL_LENGTH  255
+#define BUTTON_WIDTH 72
+#define URLBAR_HEIGHT  24
 
 	class IBrowserWindow
 	{
@@ -45,7 +49,7 @@ namespace ibrowser
 			m_instance_ptr.reset(new IBrowserWindow);
 		}
 
-		int initialize(HINSTANCE hinstance, LPSTR lpCmdLine, int nCmdShow);
+		bool initialize(HINSTANCE hinstance, LPSTR lpCmdLine, int nCmdShow);
 		
 		IBrowserHandler *getHandler()
 		{
@@ -54,7 +58,7 @@ namespace ibrowser
 
 		ATOM RegisterWinInfo(HINSTANCE hInstance);
 		bool RegisterWindow(HINSTANCE hInstance, int nCmdShow);
-		LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		// LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		
 	private :
 		CefRefPtr<IBrowserApp>		m_ibrowser_app;

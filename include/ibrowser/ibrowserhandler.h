@@ -21,9 +21,10 @@
 namespace ibrowser
 {
 	class IBrowserHandler : public CefClient,
-		public CefDisplayHandler,
-		public CefLifeSpanHandler,
-		public CefLoadHandler {
+							public CefDisplayHandler,
+							public CefLifeSpanHandler,
+							public CefLoadHandler
+	{
 	public:
 		IBrowserHandler();
 		~IBrowserHandler();
@@ -32,13 +33,16 @@ namespace ibrowser
 		static IBrowserHandler* GetInstance();
 
 		// CefClient methods:
-		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE {
+		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE 
+		{
 			return this;
 		}
-		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {
+		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE 
+		{
 			return this;
 		}
-		virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {
+		virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE 
+		{
 			return this;
 		}
 
@@ -60,13 +64,32 @@ namespace ibrowser
 		// Request that all existing browser windows close.
 		void CloseAllBrowsers(bool force_close);
 
+		// private
+	public :
+		CefRefPtr<CefBrowser>			GetBrowser();
+		CefRefPtr<IBrowserHandler>		GetHandler();
+		void							SetMainHwnd(CefWindowHandle hwnd);
+		bool							IsClosing();
+
+	private :
+		static IBrowserHandler*				m_instance;
+		static CefRefPtr<IBrowserHandler>	m_handler;
+		CefRefPtr<CefBrowser>				m_browser;
+		int									m_browserId;
+		// The main frame window handle
+		CefWindowHandle						m_mainhwnd;
+		// True if the main browser window is currently closing.
+		bool								m_bIsClosing;
+	
 	private:
 		// List of existing browser windows. Only accessed on the CEF UI thread.
-		typedef std::list<CefRefPtr<CefBrowser> > BrowserList;
-		BrowserList browser_list_;
-
+		typedef std::list<CefRefPtr<CefBrowser> >	BrowserList;
+		BrowserList									browser_list_;
+	
 		// Include the default reference counting implementation.
 		IMPLEMENT_REFCOUNTING(ibrowser::IBrowserHandler);
+		// Include the default locking implementation.
+		IMPLEMENT_LOCKING(ibrowser::IBrowserHandler);
 	};
 }
 
