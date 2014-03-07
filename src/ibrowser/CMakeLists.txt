@@ -19,6 +19,8 @@ set(IBR_SRCS
 	main.cpp
 	ibrowserapp.cpp
 	ibrowserhandler.cpp
+	ibrowserclient.cpp
+	ibrowserwindow.cpp
    )
 
 include_directories(${IBROWSER_SOURCE_DIR}/include

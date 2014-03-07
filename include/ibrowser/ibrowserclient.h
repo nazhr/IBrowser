@@ -9,23 +9,26 @@
  *   IBrowser website: https://github.com/jerrykk/IBrowser                 	*
  ****************************************************************************/
 
-// ibrowser
-#include "ibrowser/ibrowserwindow.h"
+#ifndef R_BROWSER_IBROWSERCLIENT_H
+#define R_BROWSER_IBROWSERCLIENT_H
 
-// vc
-#include <windows.h>
+// cef
+#include "include/cef_base.h"
 
-int WINAPI WinMain(	HINSTANCE hInstance,
-					HINSTANCE hPrevInstance,
-					LPSTR    lpCmdLine,
-					int       nCmdShow) 
+// boost
+#include "boost/scoped_ptr.hpp"
+#include <boost/thread/once.hpp>
+
+
+namespace ibrowser
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
-	ibrowser::IBrowserWindow ibwin = ibrowser::IBrowserWindow::instance();
-	ibwin.initialize(hInstance, lpCmdLine, nCmdShow);
-
-	
-	return 0;
+	class IBrowserClient
+	{
+	public :
+		IBrowserClient();
+		virtual ~IBrowserClient();
+		
+	};
 }
+
+#endif // R_BROWSER_IBROWSERCLIENT_H
