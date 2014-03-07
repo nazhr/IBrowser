@@ -95,7 +95,6 @@ IF (NOT WIN32)
 endif(NOT WIN32)
 
 add_subdirectory(src/ibrowser)
-#add_subdirectory(src/cefclient)
 #add_subdirectory(src/utils)
 
 ###########################################################################

@@ -55,10 +55,6 @@ namespace ibrowser
 		{
 			return m_ibrowser_handler.get();			
 		}
-
-		ATOM RegisterWinInfo(HINSTANCE hInstance);
-		bool RegisterWindow(HINSTANCE hInstance, int nCmdShow);
-		// LRESULT CALLBACK windowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		
 	private :
 		CefRefPtr<IBrowserApp>		m_ibrowser_app;

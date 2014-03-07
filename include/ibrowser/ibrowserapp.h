@@ -17,7 +17,8 @@
 
 namespace ibrowser
 {
-	class IBrowserApp: public CefApp, public CefBrowserProcessHandler
+	class IBrowserApp:	public CefApp, 
+						public CefBrowserProcessHandler
 	{
 	public : 
 		IBrowserApp();

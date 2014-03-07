@@ -10,18 +10,16 @@
  ****************************************************************************/
 
 // ibrowser
+#include "ibrowser/global.h"
 #include "ibrowser/ibrowserwindow.h"
 #include "ibrowser/ibrowserhandler.h"
-#include "ibrowser/resource.h"
 
 // cef
 #include "include/cef_app.h"
+#include "include/utils/resource.h"
 
 // vc
 #include <Windows.h>
-
-ATOM MyRegisterClass(HINSTANCE hInstance);
-LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 
 namespace ibrowser
 {
@@ -79,7 +77,7 @@ namespace ibrowser
 			LoadString(hinstance, IDS_OSR_WIDGET_CLASS, szOSRWindowClass, MAX_LOADSTRING);
 
 			MyRegisterClass(hinstance);
-			if(!RegisterWindow(hinstance, nCmdShow))
+			if(!InitInstance(hinstance, nCmdShow))
 			{
 				return 0;
 			}
@@ -87,15 +85,15 @@ namespace ibrowser
 			hAccelTable = LoadAccelerators(hinstance, MAKEINTRESOURCE(IDC_CEFCLIENT));
 
 			RECT			rect;
-			::GetClientRect(m_hwnd, &rect);
+			::GetClientRect(hWnd, &rect);
 			CefBrowserSettings browserSettings;
 			CefString(&browserSettings.default_encoding) = "utf-8";
 			browserSettings.file_access_from_file_urls = STATE_ENABLED;
 			browserSettings.universal_access_from_file_urls = STATE_ENABLED;
 			CefWindowInfo	info;
-			info.SetAsChild(m_hwnd, rect);
+			info.SetAsChild(hWnd, rect);
 			IBrowserHandler ibrowerhandler;
-			ibrowerhandler.SetMainHwnd(m_hwnd);
+			ibrowerhandler.SetMainHwnd(hWnd);
 
 			std::string		url = "www.google.com.hk";
 			CefBrowserHost::CreateBrowser(info, ibrowerhandler.GetHandler().get(), url, browserSettings);
@@ -112,102 +110,6 @@ namespace ibrowser
 			::MessageBoxA(m_hwnd, e.what(), "IBrowser System Error :", MB_OK);
 		}
 		return 1;
-	}
+	}	
 
-	bool IBrowserWindow::RegisterWindow(HINSTANCE hInstance, int nCmdShow)
-	{
-		const wchar_t CLASS_NAME[]  = L"IBrowser";
-		m_hwnd = CreateWindow(CLASS_NAME, L"IBrowser",
-			WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, 0,
-			CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
-
-		if (!m_hwnd)
-			return false;
-
-		ShowWindow(m_hwnd, nCmdShow);
-		UpdateWindow(m_hwnd);
-		return true;
-	}
-	
-
-}
-
-ATOM MyRegisterClass(HINSTANCE hInstance) 
-{
-	const wchar_t CLASS_NAME[]  = L"IBrowser";
-	WNDCLASSEX wcex;
-
-	wcex.cbSize = sizeof(WNDCLASSEX);
-
-	wcex.style         = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc   = WindowProc;
-	wcex.cbClsExtra    = 0;
-	wcex.cbWndExtra    = 0;
-	wcex.hInstance     = hInstance;
-	wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CEFCLIENT));
-	wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName  = MAKEINTRESOURCE(IDC_CEFCLIENT);
-	wcex.lpszClassName = CLASS_NAME;
-	wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-	return RegisterClassEx(&wcex);
-}
-
-LRESULT CALLBACK WindowProc(HWND hWnd, 
-							UINT message, 
-							WPARAM wParam, 
-							LPARAM lParam) 
-{
-	switch (message) {
-			case WM_DESTROY:
-				PostQuitMessage(0);
-				return 0;
-
-			case WM_SIZE:
-				if (ibrowser::IBrowserHandler::GetInstance()->GetHandler().get()) {
-					// Resize the browser window and address bar to match the new frame
-					// window size
-					RECT rect;
-					GetClientRect(hWnd, &rect);
-
-					HDWP hdwp = BeginDeferWindowPos(1);
-					hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserHandler::GetInstance()->
-						GetHandler().get()->GetBrowser()->GetHost()->GetWindowHandle(), NULL,
-						rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-						SWP_NOZORDER);
-					EndDeferWindowPos(hdwp);
-				}
-				break;
-
-			case WM_ERASEBKGND:
-				if (ibrowser::IBrowserHandler::GetInstance()->GetHandler().get()) {
-					// Dont erase the background if the browser window has been loaded
-					// (this avoids flashing)
-					return 0;
-				}
-				break;
-
-			case WM_CLOSE:
-				{
-					if (ibrowser::IBrowserHandler::GetInstance() && !ibrowser::IBrowserHandler::GetInstance()->IsClosing()) {
-						CefRefPtr<CefBrowser> browser = ibrowser::IBrowserHandler::GetInstance()->GetBrowser();
-						if (browser.get()) {
-							// Let the browser window know we are about to destroy it.
-							browser->GetHost()->CloseBrowser(false);
-							return 0;
-						}
-					}
-				}
-				break;
-
-			case WM_PAINT:
-				PAINTSTRUCT ps;
-				HDC hdc = BeginPaint(hWnd, &ps);
-				EndPaint(hWnd, &ps);
-				return 0;
-
-	}
-
-	return DefWindowProc(hWnd, message, wParam, lParam);	
 }

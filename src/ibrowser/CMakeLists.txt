@@ -21,10 +21,11 @@ set(IBR_SRCS
 	ibrowserhandler.cpp
 	ibrowserclient.cpp
 	ibrowserwindow.cpp
+	global.cpp
    )
 
 include_directories(${IBROWSER_SOURCE_DIR}/include
-					${IBROWSER_SOURCE_DIR}/include/cefclient
+					${IBROWSER_SOURCE_DIR}/include/cef
 					${IBROWSER_SOURCE_DIR}/src)
 
 add_definitions(-DCURL_STATICLIB)
