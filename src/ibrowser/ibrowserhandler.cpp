@@ -21,10 +21,16 @@
 #include "include/cef_app.h"
 #include "include/cef_runnable.h"
 
+// boost
+#include "boost/scope_exit.hpp"
+#include "boost/scoped_ptr.hpp"
+#include "boost/thread/once.hpp"
+
 namespace ibrowser
 {
-	IBrowserHandler* IBrowserHandler::m_instance = NULL;
-	CefRefPtr<IBrowserHandler>	IBrowserHandler::m_handler = NULL;
+	boost::scoped_ptr<IBrowserHandler>	IBrowserHandler::m_instance_ptr(0);
+	boost::once_flag					IBrowserHandler::m_once_flag = BOOST_ONCE_INIT;
+	CefRefPtr<IBrowserHandler>			IBrowserHandler::m_handler(0);
 
 	IBrowserHandler::IBrowserHandler() 
 		:	m_mainhwnd(NULL), 
@@ -38,13 +44,20 @@ namespace ibrowser
 
 	IBrowserHandler::~IBrowserHandler() 
 	{
-		m_instance = NULL;
+		
 	}
 
 	// static
-	IBrowserHandler* IBrowserHandler::GetInstance() 
+	IBrowserHandler& IBrowserHandler::Instance() 
 	{
-		return m_instance;
+		boost::call_once(IBrowserHandler::init, 
+			IBrowserHandler::m_once_flag);
+		return *m_instance_ptr;
+	}
+
+	void IBrowserHandler::init()
+	{
+		m_instance_ptr.reset(new IBrowserHandler);
 	}
 
 	CefRefPtr<IBrowserHandler> IBrowserHandler::GetHandler()

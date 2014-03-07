@@ -113,14 +113,14 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 			return 0;
 
 		case WM_SIZE:
-			if (ibrowser::IBrowserHandler::GetInstance()->GetHandler().get()) {
+			if (ibrowser::IBrowserHandler::Instance().GetHandler().get()) {
 				// Resize the browser window and address bar to match the new frame
 				// window size
 				RECT rect;
 				GetClientRect(hWnd, &rect);
 
 				HDWP hdwp = BeginDeferWindowPos(1);
-				hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserHandler::GetInstance()->
+				hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserHandler::Instance().
 					GetHandler().get()->GetBrowser()->GetHost()->GetWindowHandle(), NULL,
 					rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
 					SWP_NOZORDER);
@@ -129,7 +129,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 			break;
 
 		case WM_ERASEBKGND:
-			if (ibrowser::IBrowserHandler::GetInstance()->GetHandler().get()) {
+			if (ibrowser::IBrowserHandler::Instance().GetHandler().get()) {
 				// Dont erase the background if the browser window has been loaded
 				// (this avoids flashing)
 				return 0;
@@ -138,8 +138,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 
 		case WM_CLOSE:
 			{
-				if (ibrowser::IBrowserHandler::GetInstance() && !ibrowser::IBrowserHandler::GetInstance()->IsClosing()) {
-					CefRefPtr<CefBrowser> browser = ibrowser::IBrowserHandler::GetInstance()->GetBrowser();
+				if (ibrowser::IBrowserHandler::Instance().GetHandler().get() 
+					&& !ibrowser::IBrowserHandler::Instance().IsClosing()) 
+				{
+					CefRefPtr<CefBrowser> browser = ibrowser::IBrowserHandler::
+						Instance().GetBrowser();
 					if (browser.get()) {
 						// Let the browser window know we are about to destroy it.
 						browser->GetHost()->CloseBrowser(false);

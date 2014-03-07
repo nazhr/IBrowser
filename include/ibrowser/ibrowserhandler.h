@@ -12,6 +12,11 @@
 #ifndef R_IBROWSER_IBROWSERHANDLER_H
 #define R_IBROWSER_IBROWSERHANDLER_H
 
+//boost
+#include "boost/scope_exit.hpp"
+#include "boost/scoped_ptr.hpp"
+#include "boost/thread/once.hpp"
+
 // cef
 #include "include/cef_client.h"
 
@@ -30,7 +35,10 @@ namespace ibrowser
 		~IBrowserHandler();
 
 		// Provide access to the single global instance of this object.
-		static IBrowserHandler* GetInstance();
+		static IBrowserHandler& Instance();
+
+		// reset ibrowserhandler
+		static void init();
 
 		// CefClient methods:
 		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE 
@@ -66,20 +74,21 @@ namespace ibrowser
 
 		// private
 	public :
-		CefRefPtr<CefBrowser>			GetBrowser();
-		CefRefPtr<IBrowserHandler>		GetHandler();
-		void							SetMainHwnd(CefWindowHandle hwnd);
-		bool							IsClosing();
+		CefRefPtr<CefBrowser>						GetBrowser();
+		CefRefPtr<IBrowserHandler>					GetHandler();
+		void										SetMainHwnd(CefWindowHandle hwnd);
+		bool										IsClosing();
 
 	private :
-		static IBrowserHandler*				m_instance;
-		static CefRefPtr<IBrowserHandler>	m_handler;
-		CefRefPtr<CefBrowser>				m_browser;
-		int									m_browserId;
+		static boost::scoped_ptr<IBrowserHandler>	m_instance_ptr;
+		static boost::once_flag						m_once_flag;
+		static CefRefPtr<IBrowserHandler>			m_handler;
+		CefRefPtr<CefBrowser>						m_browser;
+		int											m_browserId;
 		// The main frame window handle
-		CefWindowHandle						m_mainhwnd;
+		CefWindowHandle								m_mainhwnd;
 		// True if the main browser window is currently closing.
-		bool								m_bIsClosing;
+		bool										m_bIsClosing;
 	
 	private:
 		// List of existing browser windows. Only accessed on the CEF UI thread.

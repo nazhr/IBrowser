@@ -92,11 +92,12 @@ namespace ibrowser
 			browserSettings.universal_access_from_file_urls = STATE_ENABLED;
 			CefWindowInfo	info;
 			info.SetAsChild(hWnd, rect);
-			IBrowserHandler ibrowerhandler;
-			ibrowerhandler.SetMainHwnd(hWnd);
+			// IBrowserHandler ibrowerhandler;
+			// ibrowerhandler.SetMainHwnd(hWnd);
+			IBrowserHandler::Instance().SetMainHwnd(hWnd);
 
 			std::string		url = "www.google.com.hk";
-			CefBrowserHost::CreateBrowser(info, ibrowerhandler.GetHandler().get(), url, browserSettings);
+			CefBrowserHost::CreateBrowser(info, IBrowserHandler::Instance().GetHandler().get(), url, browserSettings);
 
 			// Run the CEF message loop. This will block until CefQuitMessageLoop() is
 			// called.
