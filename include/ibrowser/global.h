@@ -16,8 +16,8 @@
 #define R_IBROWSER_GLOBAL_H
 
 // ibrowser
-#include "ibrowser/global.h"
 #include "ibrowser/ibrowserhandler.h"
+#include "ibrowser/ibrowserwindow.h"
 
 // cef
 #include "include/cef_app.h"
@@ -113,15 +113,18 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 			return 0;
 
 		case WM_SIZE:
-			if (ibrowser::IBrowserHandler::Instance().GetHandler().get()) {
+			if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().
+				GetHandler().get()) 
+			{
 				// Resize the browser window and address bar to match the new frame
 				// window size
 				RECT rect;
 				GetClientRect(hWnd, &rect);
 
 				HDWP hdwp = BeginDeferWindowPos(1);
-				hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserHandler::Instance().
-					GetHandler().get()->GetBrowser()->GetHost()->GetWindowHandle(), NULL,
+				hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserSingle::Instance().
+					getIBrowserHandler().GetHandler().get()->GetBrowser()->
+					GetHost()->GetWindowHandle(), NULL,
 					rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
 					SWP_NOZORDER);
 				EndDeferWindowPos(hdwp);
@@ -129,7 +132,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 			break;
 
 		case WM_ERASEBKGND:
-			if (ibrowser::IBrowserHandler::Instance().GetHandler().get()) {
+			if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get()) {
 				// Dont erase the background if the browser window has been loaded
 				// (this avoids flashing)
 				return 0;
@@ -138,11 +141,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 
 		case WM_CLOSE:
 			{
-				if (ibrowser::IBrowserHandler::Instance().GetHandler().get() 
-					&& !ibrowser::IBrowserHandler::Instance().IsClosing()) 
+				if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get() 
+					&& !ibrowser::IBrowserSingle::Instance().getIBrowserHandler().IsClosing()) 
 				{
-					CefRefPtr<CefBrowser> browser = ibrowser::IBrowserHandler::
-						Instance().GetBrowser();
+					CefRefPtr<CefBrowser> browser = ibrowser::IBrowserSingle::Instance().
+						getIBrowserHandler().GetBrowser();
 					if (browser.get()) {
 						// Let the browser window know we are about to destroy it.
 						browser->GetHost()->CloseBrowser(false);

@@ -21,8 +21,20 @@
 // vc
 #include <Windows.h>
 
+#include "boost/thread/once.hpp"
+#include "boost/scoped_ptr.hpp"
+
 namespace ibrowser
 {
+	/*
+	 * @brief : ibrowser single static init .
+	 */
+	boost::scoped_ptr<ibrowser::IBrowserSingle> IBrowserSingle::m_ibrowser_sinlge(0);
+	boost::once_flag							IBrowserSingle::m_once_flag = BOOST_ONCE_INIT;
+
+	/*
+	 * @brief : ibrowser window
+	 */
 	IBrowserWindow::IBrowserWindow()
 		: m_ibrowser_app(NULL)
 	{
@@ -47,7 +59,7 @@ namespace ibrowser
 			// Provide CEF with command-line arguments.
 			CefMainArgs main_args(hinstance);
 
-			// SimpleApp implements application-level callbacks. It will create the first
+			// App implements application-level callbacks. It will create the first
 			// browser instance in OnContextInitialized() after CEF has initialized.
 			CefRefPtr<ibrowser::IBrowserApp> app(new ibrowser::IBrowserApp);
 
@@ -92,12 +104,13 @@ namespace ibrowser
 			browserSettings.universal_access_from_file_urls = STATE_ENABLED;
 			CefWindowInfo	info;
 			info.SetAsChild(hWnd, rect);
-			// IBrowserHandler ibrowerhandler;
-			// ibrowerhandler.SetMainHwnd(hWnd);
-			IBrowserHandler::Instance().SetMainHwnd(hWnd);
+			// IBrowserHandler::Instance().SetMainHwnd(hWnd);
+			IBrowserSingle::Instance().getIBrowserHandler().SetMainHwnd(hWnd);
 
 			std::string		url = "www.google.com.hk";
-			CefBrowserHost::CreateBrowser(info, IBrowserHandler::Instance().GetHandler().get(), url, browserSettings);
+			// CefBrowserHost::CreateBrowser(info, IBrowserHandler::Instance().GetHandler().get(), url, browserSettings);
+			CefBrowserHost::CreateBrowser(info, IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get(), 
+				url, browserSettings);
 
 			// Run the CEF message loop. This will block until CefQuitMessageLoop() is
 			// called.

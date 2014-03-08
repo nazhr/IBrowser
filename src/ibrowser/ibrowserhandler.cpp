@@ -28,16 +28,13 @@
 
 namespace ibrowser
 {
-	boost::scoped_ptr<IBrowserHandler>	IBrowserHandler::m_instance_ptr(0);
-	boost::once_flag					IBrowserHandler::m_once_flag = BOOST_ONCE_INIT;
-	CefRefPtr<IBrowserHandler>			IBrowserHandler::m_handler(0);
-
 	IBrowserHandler::IBrowserHandler() 
 		:	m_mainhwnd(NULL), 
 			m_browser(NULL),
 			m_browserId(0),
 			m_bIsClosing(false),
-			browser_list_(NULL)
+			browser_list_(NULL),
+			m_handler(0)
 	{
 		
 	}
@@ -45,19 +42,6 @@ namespace ibrowser
 	IBrowserHandler::~IBrowserHandler() 
 	{
 		
-	}
-
-	// static
-	IBrowserHandler& IBrowserHandler::Instance() 
-	{
-		boost::call_once(IBrowserHandler::init, 
-			IBrowserHandler::m_once_flag);
-		return *m_instance_ptr;
-	}
-
-	void IBrowserHandler::init()
-	{
-		m_instance_ptr.reset(new IBrowserHandler);
 	}
 
 	CefRefPtr<IBrowserHandler> IBrowserHandler::GetHandler()

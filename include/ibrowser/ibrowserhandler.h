@@ -34,12 +34,9 @@ namespace ibrowser
 		IBrowserHandler();
 		~IBrowserHandler();
 
-		// Provide access to the single global instance of this object.
-		static IBrowserHandler& Instance();
-
-		// reset ibrowserhandler
-		static void init();
-
+		/*
+		 * @brief : cef inherit
+		 */
 		// CefClient methods:
 		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE 
 		{
@@ -80,9 +77,7 @@ namespace ibrowser
 		bool										IsClosing();
 
 	private :
-		static boost::scoped_ptr<IBrowserHandler>	m_instance_ptr;
-		static boost::once_flag						m_once_flag;
-		static CefRefPtr<IBrowserHandler>			m_handler;
+		CefRefPtr<IBrowserHandler>					m_handler;
 		CefRefPtr<CefBrowser>						m_browser;
 		int											m_browserId;
 		// The main frame window handle

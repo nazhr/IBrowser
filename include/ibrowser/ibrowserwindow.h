@@ -9,11 +9,12 @@
  *   IBrowser website: https://github.com/jerrykk/IBrowser                 	*
  ****************************************************************************/
 
-#ifndef R_BROWSER_IBROWSERCLIENT_H
-#define R_BROWSER_IBROWSERCLIENT_H
+#ifndef R_BROWSER_IBROWSERWIN_H
+#define R_BROWSER_IBROWSERWIN_H
 
 // ibrowser
 #include "ibrowser/ibrowserapp.h"
+#include "ibrowser/ibrowserclient.h"
 #include "ibrowser/ibrowserhandler.h"
 
 // cef
@@ -33,6 +34,68 @@ namespace ibrowser
 #define BUTTON_WIDTH 72
 #define URLBAR_HEIGHT  24
 
+	/*
+	 * @brief : single ibrowser
+	 */
+	class IBrowserSingle
+	{
+	public :
+		IBrowserSingle()
+			:	m_ibrowser_app(new IBrowserApp), 
+				m_ibrowser_client(new IBrowserClient),
+				m_ibrowser_handler(new IBrowserHandler)
+		{
+			
+		}
+		~IBrowserSingle()
+		{
+			m_ibrowser_app.reset();
+			m_ibrowser_client.reset();
+			m_ibrowser_handler.reset();
+		}
+
+		// static
+		static IBrowserSingle& Instance()
+		{
+			boost::call_once(IBrowserSingle::init, IBrowserSingle::m_once_flag);
+			return *m_ibrowser_sinlge;
+		}
+		static void init()
+		{
+			m_ibrowser_sinlge.reset(new IBrowserSingle);
+		}
+
+		IBrowserApp& getIBrowserApp()
+		{
+			return *m_ibrowser_app;
+		}
+
+		IBrowserClient& getIBrowserClient()
+		{
+			return *m_ibrowser_client;	
+		}
+
+		IBrowserHandler& getIBrowserHandler()
+		{
+			return *m_ibrowser_handler;	
+		}
+
+	/*
+	 * @brief : ibrowser ptr
+	 */
+	private : 
+		boost::scoped_ptr<ibrowser::IBrowserApp>			m_ibrowser_app;
+		boost::scoped_ptr<ibrowser::IBrowserClient>			m_ibrowser_client;
+		boost::scoped_ptr<ibrowser::IBrowserHandler>		m_ibrowser_handler;
+
+	private :
+		static boost::scoped_ptr<ibrowser::IBrowserSingle>	m_ibrowser_sinlge;
+		static boost::once_flag								m_once_flag;
+	};
+
+	/*
+	 * @brief : ibrowser window class
+	 */
 	class IBrowserWindow
 	{
 	public :
@@ -72,4 +135,4 @@ namespace ibrowser
 	};
 }
 
-#endif // R_BROWSER_IBROWSERCLIENT_H
+#endif // R_BROWSER_IBROWSERWIN_H
