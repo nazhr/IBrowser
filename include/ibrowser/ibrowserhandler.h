@@ -71,10 +71,10 @@ namespace ibrowser
 
 		// private
 	public :
-		CefRefPtr<CefBrowser>						GetBrowser();
-		CefRefPtr<IBrowserHandler>					GetHandler();
-		void										SetMainHwnd(CefWindowHandle hwnd);
-		bool										IsClosing();
+		inline CefRefPtr<CefBrowser>				GetBrowser();
+		inline CefRefPtr<IBrowserHandler>			GetCefPtrHandler();
+		inline void									SetMainHwnd(CefWindowHandle hwnd);
+		inline bool									IsClosing();
 
 	private :
 		CefRefPtr<IBrowserHandler>					m_handler;
@@ -95,6 +95,29 @@ namespace ibrowser
 		// Include the default locking implementation.
 		IMPLEMENT_LOCKING(ibrowser::IBrowserHandler);
 	};
+
+	inline CefRefPtr<IBrowserHandler> 
+		IBrowserHandler::GetCefPtrHandler()
+	{
+		return this;
+	}
+
+	inline CefRefPtr<CefBrowser> 
+		IBrowserHandler::GetBrowser() 
+	{ 
+		return m_browser; 
+	}
+
+	inline void IBrowserHandler::SetMainHwnd(CefWindowHandle hwnd) 
+	{
+		AutoLock lock_scope(this);
+		m_mainhwnd = hwnd;
+	}
+
+	inline bool IBrowserHandler::IsClosing()
+	{
+		return m_bIsClosing;
+	}
 }
 
 #endif // R_IBROWSER_IBROWSERHANDLER_H

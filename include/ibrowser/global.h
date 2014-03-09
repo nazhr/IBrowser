@@ -107,32 +107,35 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 	WPARAM wParam, 
 	LPARAM lParam) 
 {
+	ibrowser::IBrowserHandler *ibrowser_cur_handler = ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler();
 	switch (message) {
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
 
 		case WM_SIZE:
-			if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().
-				GetHandler().get()) 
+			if (ibrowser_cur_handler) 
 			{
 				// Resize the browser window and address bar to match the new frame
 				// window size
-				RECT rect;
-				GetClientRect(hWnd, &rect);
+				CefWindowHandle hwnd = ibrowser_cur_handler->GetBrowser()->GetHost()->GetWindowHandle();
+				if(hwnd)
+				{
+					RECT rect;
+					GetClientRect(hWnd, &rect);
 
-				HDWP hdwp = BeginDeferWindowPos(1);
-				hdwp = DeferWindowPos(hdwp, ibrowser::IBrowserSingle::Instance().
-					getIBrowserHandler().GetHandler().get()->GetBrowser()->
-					GetHost()->GetWindowHandle(), NULL,
-					rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-					SWP_NOZORDER);
-				EndDeferWindowPos(hdwp);
+					HDWP hdwp = BeginDeferWindowPos(1);
+
+					hdwp = DeferWindowPos(hdwp, hwnd, NULL,
+						rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+						SWP_NOZORDER);
+					EndDeferWindowPos(hdwp);
+				}
 			}
 			break;
 
 		case WM_ERASEBKGND:
-			if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get()) {
+			if (ibrowser_cur_handler) {
 				// Dont erase the background if the browser window has been loaded
 				// (this avoids flashing)
 				return 0;
@@ -141,11 +144,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd,
 
 		case WM_CLOSE:
 			{
-				if (ibrowser::IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get() 
-					&& !ibrowser::IBrowserSingle::Instance().getIBrowserHandler().IsClosing()) 
+				if (ibrowser_cur_handler 
+					&& !ibrowser_cur_handler->IsClosing()) 
 				{
-					CefRefPtr<CefBrowser> browser = ibrowser::IBrowserSingle::Instance().
-						getIBrowserHandler().GetBrowser();
+					CefRefPtr<CefBrowser> browser = ibrowser_cur_handler->GetBrowser();
 					if (browser.get()) {
 						// Let the browser window know we are about to destroy it.
 						browser->GetHost()->CloseBrowser(false);

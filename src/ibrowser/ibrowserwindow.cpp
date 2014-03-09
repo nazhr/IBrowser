@@ -105,11 +105,11 @@ namespace ibrowser
 			CefWindowInfo	info;
 			info.SetAsChild(hWnd, rect);
 			// IBrowserHandler::Instance().SetMainHwnd(hWnd);
-			IBrowserSingle::Instance().getIBrowserHandler().SetMainHwnd(hWnd);
+			IBrowserSingle::Instance().getCurrentIBrowserHandler()->SetMainHwnd(hWnd);
 
 			std::string		url = "www.google.com.hk";
 			// CefBrowserHost::CreateBrowser(info, IBrowserHandler::Instance().GetHandler().get(), url, browserSettings);
-			CefBrowserHost::CreateBrowser(info, IBrowserSingle::Instance().getIBrowserHandler().GetHandler().get(), 
+			CefBrowserHost::CreateBrowser(info, IBrowserSingle::Instance().getCurrentIBrowserHandler(), 
 				url, browserSettings);
 
 			// Run the CEF message loop. This will block until CefQuitMessageLoop() is

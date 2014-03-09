@@ -42,16 +42,14 @@ namespace ibrowser
 	public :
 		IBrowserSingle()
 			:	m_ibrowser_app(new IBrowserApp), 
-				m_ibrowser_client(new IBrowserClient),
+				// m_ibrowser_client(new IBrowserClient),
 				m_ibrowser_handler(new IBrowserHandler)
 		{
 			
 		}
 		~IBrowserSingle()
 		{
-			m_ibrowser_app.reset();
-			m_ibrowser_client.reset();
-			m_ibrowser_handler.reset();
+			
 		}
 
 		// static
@@ -65,28 +63,28 @@ namespace ibrowser
 			m_ibrowser_sinlge.reset(new IBrowserSingle);
 		}
 
-		IBrowserApp& getIBrowserApp()
+		IBrowserApp* getCurrentIBrowserApp()
 		{
-			return *m_ibrowser_app;
+			return m_ibrowser_app.get();
 		}
 
-		IBrowserClient& getIBrowserClient()
+		/*IBrowserClient* getCurrentIBrowserClient()
 		{
-			return *m_ibrowser_client;	
-		}
+			return m_ibrowser_client.get();	
+		}*/
 
-		IBrowserHandler& getIBrowserHandler()
+		IBrowserHandler* getCurrentIBrowserHandler()
 		{
-			return *m_ibrowser_handler;	
+			return m_ibrowser_handler.get();	
 		}
 
 	/*
 	 * @brief : ibrowser ptr
 	 */
 	private : 
-		boost::scoped_ptr<ibrowser::IBrowserApp>			m_ibrowser_app;
-		boost::scoped_ptr<ibrowser::IBrowserClient>			m_ibrowser_client;
-		boost::scoped_ptr<ibrowser::IBrowserHandler>		m_ibrowser_handler;
+		CefRefPtr<ibrowser::IBrowserApp>					m_ibrowser_app;
+		// CefRefPtr<ibrowser::IBrowserClient>					m_ibrowser_client;
+		CefRefPtr<ibrowser::IBrowserHandler>				m_ibrowser_handler;
 
 	private :
 		static boost::scoped_ptr<ibrowser::IBrowserSingle>	m_ibrowser_sinlge;

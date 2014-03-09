@@ -44,14 +44,19 @@ namespace ibrowser
 		
 	}
 
-	CefRefPtr<IBrowserHandler> IBrowserHandler::GetHandler()
-	{
-		return m_handler;
-	}
-
 	void IBrowserHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) 
 	{
 		REQUIRE_UI_THREAD();
+		
+		AutoLock lock_scope(this);
+		if (!m_browser.get())   {
+			// We need to keep the main child window, but not popup windows
+			m_browser = browser;
+			m_browserId = browser->GetIdentifier();
+		} else if (browser->IsPopup()) {
+			// Add to the list of popup browsers.
+			browser_list_.push_back(browser);
+		}
 
 		// Add to the list of existing browsers.
 		browser_list_.push_back(browser);
@@ -69,7 +74,12 @@ namespace ibrowser
 	void IBrowserHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) 
 	{
 		REQUIRE_UI_THREAD();
-
+		
+		if(m_browserId == browser->GetIdentifier())
+		{
+			// Free the browser pointer so that the browser can be destroyed
+			m_browser = NULL;	
+		}
 		// Remove from the list of existing browsers.
 		BrowserList::iterator bit = browser_list_.begin();
 		for (; bit != browser_list_.end(); ++bit) 
@@ -127,19 +137,4 @@ namespace ibrowser
 			(*it)->GetHost()->CloseBrowser(force_close);
 	}
 
-	CefRefPtr<CefBrowser> IBrowserHandler::GetBrowser() 
-	{ 
-		return m_browser; 
-	}
-
-	void IBrowserHandler::SetMainHwnd(CefWindowHandle hwnd) 
-	{
-		AutoLock lock_scope(this);
-		m_mainhwnd = hwnd;
-	}
-	
-	bool IBrowserHandler::IsClosing()
-	{
-		 return m_bIsClosing;
-	}
 }

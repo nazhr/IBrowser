@@ -26,6 +26,7 @@ set(IBR_SRCS
 
 include_directories(${IBROWSER_SOURCE_DIR}/include
 					${IBROWSER_SOURCE_DIR}/include/cef
+					${IBROWSER_SOURCE_DIR}/include/utils
 					${IBROWSER_SOURCE_DIR}/src)
 
 add_definitions(-DCURL_STATICLIB)
