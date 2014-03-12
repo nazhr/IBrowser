@@ -36,7 +36,11 @@ namespace ibrowser
 			browser_list_(NULL),
 			m_handler(0)
 	{
-		
+		CefRefPtr<CefCommandLine>	cmd = CefCommandLine::GetGlobalCommandLine();
+		if (cmd->HasSwitch("url"))
+			m_startupURL = cmd->GetSwitchValue("url");
+		if (m_startupURL.empty())
+			m_startupURL = "http://www.google.com/";
 	}
 
 	IBrowserHandler::~IBrowserHandler() 
@@ -60,6 +64,8 @@ namespace ibrowser
 
 		// Add to the list of existing browsers.
 		browser_list_.push_back(browser);
+
+		
 	}
 
 	void IBrowserHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
@@ -69,6 +75,25 @@ namespace ibrowser
 
 										  CefWindowHandle hwnd = browser->GetHost()->GetWindowHandle();
 										  SetWindowText(hwnd, std::wstring(title).c_str());
+	}
+
+	bool IBrowserHandler::DoClose(CefRefPtr<CefBrowser> browser)
+	{
+		REQUIRE_UI_THREAD();
+
+		// Closing the main window requires special handling. See the DoClose()
+		// documentation in the CEF header for a detailed destription of this
+		// process.
+
+		if(m_browserId == browser->GetIdentifier())
+		{
+			// Notify the browser that the parent window is about to close.
+			browser->GetHost()->ParentWindowWillClose();
+
+			// Set a flag to indicate that the window close should be allowed.
+			m_bIsClosing = true;
+		}
+		return false;
 	}
 
 	void IBrowserHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) 
@@ -135,6 +160,23 @@ namespace ibrowser
 		BrowserList::const_iterator it = browser_list_.begin();
 		for (; it != browser_list_.end(); ++it)
 			(*it)->GetHost()->CloseBrowser(force_close);
+	}
+
+	void IBrowserHandler::SetEditHwnd(CefWindowHandle hwnd) {
+		AutoLock lock_scope(this);
+		m_editHwnd = hwnd;
+	}
+
+	void IBrowserHandler::SetButtonHwnds(	CefWindowHandle backHwnd,
+											CefWindowHandle forwardHwnd,
+											CefWindowHandle reloadHwnd,
+											CefWindowHandle stopHwnd) 
+	{
+			AutoLock lock_scope(this);
+			m_backHwnd = backHwnd;
+			m_forwardHwnd = forwardHwnd;
+			m_reloadHwnd = reloadHwnd;
+			m_stopHwnd = stopHwnd;
 	}
 
 }

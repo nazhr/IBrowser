@@ -38,50 +38,69 @@ namespace ibrowser
 		 * @brief : cef inherit
 		 */
 		// CefClient methods:
-		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE 
+		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler()	OVERRIDE 
 		{
 			return this;
 		}
-		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE 
+		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler()	OVERRIDE 
 		{
 			return this;
 		}
-		virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE 
+		virtual CefRefPtr<CefLoadHandler> GetLoadHandler()			OVERRIDE 
 		{
 			return this;
 		}
 
 		// CefDisplayHandler methods:
 		virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
-			const CefString& title) OVERRIDE;
+			const CefString& title)									OVERRIDE;
 
 		// CefLifeSpanHandler methods:
-		virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
-		virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
+		virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser)	OVERRIDE;
+		virtual bool DoClose(CefRefPtr<CefBrowser> browser)			OVERRIDE;
+		virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser)	OVERRIDE;
 
 		// CefLoadHandler methods:
 		virtual void OnLoadError(CefRefPtr<CefBrowser> browser,
 			CefRefPtr<CefFrame> frame,
 			ErrorCode errorCode,
 			const CefString& errorText,
-			const CefString& failedUrl) OVERRIDE;
+			const CefString& failedUrl)								OVERRIDE;
 
 		// Request that all existing browser windows close.
 		void CloseAllBrowsers(bool force_close);
 
 		// private
 	public :
+		CefWindowHandle GetMainHwnd() { return m_mainHwnd; }
+		void SetEditHwnd(CefWindowHandle hwnd);
+		void SetButtonHwnds(CefWindowHandle backHwnd,
+							CefWindowHandle forwardHwnd,
+							CefWindowHandle reloadHwnd,
+							CefWindowHandle stopHwnd);
 		inline CefRefPtr<CefBrowser>				GetBrowser();
 		inline CefRefPtr<IBrowserHandler>			GetCefPtrHandler();
 		inline void									SetMainHwnd(CefWindowHandle hwnd);
+		// Returns the startup URL.
+		inline std::string							GetStartupURL();
 		inline bool									IsClosing();
 
 	private :
 		CefRefPtr<IBrowserHandler>					m_handler;
 		CefRefPtr<CefBrowser>						m_browser;
+		CefWindowHandle								m_mainHwnd;
 		int											m_browserId;
+		// The startup URL.
+		std::string									m_startupURL;
 		// The main frame window handle
 		CefWindowHandle								m_mainhwnd;
+		// The edit window handle
+		CefWindowHandle								m_editHwnd;
+		// The button window handles
+		CefWindowHandle								m_backHwnd;
+		CefWindowHandle								m_forwardHwnd;
+		CefWindowHandle								m_stopHwnd;
+		CefWindowHandle								m_reloadHwnd;
 		// True if the main browser window is currently closing.
 		bool										m_bIsClosing;
 	
@@ -106,6 +125,12 @@ namespace ibrowser
 		IBrowserHandler::GetBrowser() 
 	{ 
 		return m_browser; 
+	}
+
+	// Returns the startup URL.
+	inline std::string IBrowserHandler::GetStartupURL() 
+	{ 
+		return m_startupURL;
 	}
 
 	inline void IBrowserHandler::SetMainHwnd(CefWindowHandle hwnd) 

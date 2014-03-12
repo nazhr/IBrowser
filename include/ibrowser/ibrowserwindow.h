@@ -41,9 +41,9 @@ namespace ibrowser
 	{
 	public :
 		IBrowserSingle()
-			:	m_ibrowser_app(new IBrowserApp), 
+			:	m_ibrowser_app(NULL), 
 				// m_ibrowser_client(new IBrowserClient),
-				m_ibrowser_handler(new IBrowserHandler)
+				m_ibrowser_handler(NULL)
 		{
 			
 		}
@@ -78,6 +78,12 @@ namespace ibrowser
 			return m_ibrowser_handler.get();	
 		}
 
+		void setCurrentIBrowserHandler(IBrowserHandler *handler)
+		{
+			// m_ibrowser_handler->Release();
+			m_ibrowser_handler = handler;
+		}
+
 	/*
 	 * @brief : ibrowser ptr
 	 */
@@ -100,7 +106,7 @@ namespace ibrowser
 		IBrowserWindow();
 		virtual ~IBrowserWindow();
 		
-		static	IBrowserWindow &instance()
+		static	IBrowserWindow &GetCurrentIBorwserWindow()
 		{
 			boost::call_once(IBrowserWindow::init, m_once_flag);
 			return *m_instance_ptr;
@@ -110,26 +116,55 @@ namespace ibrowser
 			m_instance_ptr.reset(new IBrowserWindow);
 		}
 
-		bool initialize(HINSTANCE hinstance, LPSTR lpCmdLine, int nCmdShow);
-		
-		IBrowserHandler *getHandler()
+		static HINSTANCE GetCurrentAppHandler()
 		{
-			return m_ibrowser_handler.get();			
+			return m_hInstance;	
 		}
+
+		static IBrowserApp *GetCurrentApp()
+		{
+			return m_ibrowser_app.get();	
+		}
+
+		bool initialize(HINSTANCE hinstance, LPSTR lpCmdLine, int nCmdShow);
+
+		/*
+		 *   函数: InitInstance(HINSTANCE, int)
+		 *
+		 *   目的: 保存实例句柄并创建主窗口
+		 *
+		 *   注释:
+		 *
+		 *        在此函数中，我们在全局变量中保存实例句柄并
+		 *        创建和显示主程序窗口。
+		 */
+		bool CreateDefMainWindow();
+
+		/*
+		 *  函数: MyRegisterClass()
+		 *
+		 *  目的: 注册窗口类。
+		 *
+		 *  注释:
+		 *
+		 *    这样应用程序就可以获得关联的
+		 *    "格式正确的"小图标。
+		 */
+		ATOM RegisterWindowClass();
 		
 	private :
-		CefRefPtr<IBrowserApp>		m_ibrowser_app;
-		HINSTANCE					m_instance_app;
 		LPSTR						m_lpCmdLine;
 		int							m_nCmdShow;
 		TCHAR						m_sz_title[MAX_LOADSTRING];  
 		TCHAR						m_sz_windowClass[MAX_LOADSTRING];
-		HWND						m_hwnd;
+		HWND						m_hWnd;
 
 	private :
+		static	CefRefPtr<ibrowser::IBrowserApp>				m_ibrowser_app;
 		static	boost::scoped_ptr<ibrowser::IBrowserWindow>		m_instance_ptr;
-		static	CefRefPtr<ibrowser::IBrowserHandler>			m_ibrowser_handler;
 		static	boost::once_flag								m_once_flag;
+		static	HINSTANCE										m_hInstance;
+		
 	};
 }
 

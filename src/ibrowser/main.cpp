@@ -23,7 +23,7 @@ int WINAPI WinMain(	HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	ibrowser::IBrowserWindow ibwin = ibrowser::IBrowserWindow::instance();
+	ibrowser::IBrowserWindow ibwin = ibrowser::IBrowserWindow::GetCurrentIBorwserWindow();
 	bool status = ibwin.initialize(hInstance, lpCmdLine, nCmdShow);
 
 	
