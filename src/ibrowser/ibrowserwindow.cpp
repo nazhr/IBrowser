@@ -81,13 +81,11 @@ namespace ibrowser
 			
 			HACCEL			hAccelTable;
 
-			TCHAR			szTitle[MAX_LOADSTRING];  // The title bar text
-			TCHAR			szWindowClass[MAX_LOADSTRING];  // the main window class name
-			TCHAR			szOSRWindowClass[MAX_LOADSTRING];  // the OSR window class name
 			// Initialize global strings
-			LoadString(hinstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-			LoadString(hinstance, IDC_CEFCLIENT, szWindowClass, MAX_LOADSTRING);
-			LoadString(hinstance, IDS_OSR_WIDGET_CLASS, szOSRWindowClass, MAX_LOADSTRING);
+			/*
+			LoadString(hinstance, IDS_APP_TITLE, m_sz_title, MAX_LOADSTRING);
+			LoadString(hinstance, IDC_CEFCLIENT, m_sz_windowClass, MAX_LOADSTRING);
+			*/
 
 			RegisterWindowClass();
 			if(!CreateDefMainWindow())
@@ -97,23 +95,6 @@ namespace ibrowser
 
 			hAccelTable = LoadAccelerators(hinstance, MAKEINTRESOURCE(IDC_CEFCLIENT));
 
-			/*
-			RECT			rect;
-			::GetClientRect(hWnd, &rect);
-			CefBrowserSettings browserSettings;
-			CefString(&browserSettings.default_encoding) = "utf-8";
-			browserSettings.file_access_from_file_urls = STATE_ENABLED;
-			browserSettings.universal_access_from_file_urls = STATE_ENABLED;
-			CefWindowInfo	info;
-			info.SetAsChild(hWnd, rect);
-			// IBrowserHandler::Instance().SetMainHwnd(hWnd);
-			IBrowserSingle::Instance().getCurrentIBrowserHandler()->SetMainHwnd(hWnd);
-
-			std::string		url = "www.google.com.hk";
-			// CefBrowserHost::CreateBrowser(info, IBrowserHandler::Instance().GetHandler().get(), url, browserSettings);
-			CefBrowserHost::CreateBrowser(info, IBrowserSingle::Instance().getCurrentIBrowserHandler(), 
-				url, browserSettings);
-			*/
 			// Run the CEF message loop. This will block until CefQuitMessageLoop() is
 			// called.
 			CefRunMessageLoop();
@@ -123,33 +104,36 @@ namespace ibrowser
 		}
 		catch(std::exception &e)
 		{
-			::MessageBoxA(m_hWnd, e.what(), "IBrowser System Error :", MB_OK);
+			MessageUtils::MessageBoxDef(m_hWnd, e.what(), "IBrowser Window System Error : ");
 		}
 		return 1;
 	}	
 
 	bool IBrowserWindow::CreateDefMainWindow()
 	{
-		const wchar_t	class_name[] = L"IBrowser";
+		try{
+			m_hWnd = CreateWindow(CLASS_NAME, CLASS_NAME,
+				WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, 0,
+				CW_USEDEFAULT, 0, NULL, NULL, m_hInstance, NULL);
 
-		m_hWnd = CreateWindow(class_name, L"IBrowser",
-			WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, 0,
-			CW_USEDEFAULT, 0, NULL, NULL, m_hInstance, NULL);
+			if (!m_hWnd)
+			{
+				return false;
+			}
 
-		if (!m_hWnd)
-		{
-			return FALSE;
+			ShowWindow(m_hWnd, m_nCmdShow);
+			UpdateWindow(m_hWnd);
+
 		}
-
-		ShowWindow(m_hWnd, m_nCmdShow);
-		UpdateWindow(m_hWnd);
-
-		return TRUE;
+		catch(std::exception &e)
+		{
+			MessageUtils::MessageBoxDef(m_hWnd, e.what(), "IBrowser Window System Error : ");
+		}
+		return true;
 	}
 
 	ATOM IBrowserWindow::RegisterWindowClass()
 	{
-		const wchar_t CLASS_NAME[]  = L"IBrowser";
 		WNDCLASSEX wcex;
 
 		wcex.cbSize = sizeof(WNDCLASSEX);

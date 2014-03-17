@@ -17,6 +17,9 @@
 #include "ibrowser/ibrowserclient.h"
 #include "ibrowser/ibrowserhandler.h"
 
+// ibrowser utils
+#include "utils/messagebox.h"
+
 // cef
 #include "include/cef_base.h"
 
@@ -28,11 +31,11 @@
 namespace ibrowser
 {
 
-#define MAX_LOADSTRING 100
-#define MAX_LOADSTRING 100
+#define MAX_LOADSTRING	100
 #define MAX_URL_LENGTH  255
-#define BUTTON_WIDTH 72
-#define URLBAR_HEIGHT  24
+#define URLBAR_HEIGHT	24
+
+const static wchar_t CLASS_NAME[]  = L"IBrowser";
 
 	/*
 	 * @brief : single ibrowser
@@ -100,7 +103,7 @@ namespace ibrowser
 	/*
 	 * @brief : ibrowser window class
 	 */
-	class IBrowserWindow
+	class IBrowserWindow : public virtual MessageUtils
 	{
 	public :
 		IBrowserWindow();
@@ -155,8 +158,6 @@ namespace ibrowser
 	private :
 		LPSTR						m_lpCmdLine;
 		int							m_nCmdShow;
-		TCHAR						m_sz_title[MAX_LOADSTRING];  
-		TCHAR						m_sz_windowClass[MAX_LOADSTRING];
 		HWND						m_hWnd;
 
 	private :

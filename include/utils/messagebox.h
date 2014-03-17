@@ -27,11 +27,11 @@ namespace ibrowser
 	public :
 		MessageUtils(){}
 		virtual ~MessageUtils(){}
-		void MessageBoxDef(const char *content = NULL, const char *title = "IBrowser System Error : ")
+		void MessageBoxDef(HWND hWnd = NULL, const char *content = NULL, const char *title = "IBrowser System Error : ")
 		{
 			BOOST_ASSERT(content && "content is NULL !");
 #if WIN32
-			MessageBoxA(NULL, content, title, MB_OK);
+			MessageBoxA(hWnd, content, title, MB_OK);
 #endif
 		}
 	};

@@ -68,13 +68,29 @@ namespace ibrowser
 		
 	}
 
+	void IBrowserHandler::OnAddressChange(	CefRefPtr<CefBrowser>	browser, 
+											CefRefPtr<CefFrame>		frame, 
+											const CefString			&url)
+	{
+		REQUIRE_UI_THREAD();
+
+		if(m_browserId == browser->GetIdentifier() && frame->IsMain())
+		{
+			::SetWindowText(m_editHwnd, std::wstring(url).c_str());
+		}
+	}
+
 	void IBrowserHandler::OnTitleChange(CefRefPtr<CefBrowser> browser,
 									  const CefString& title) 
 	{
-										  REQUIRE_UI_THREAD();
+		REQUIRE_UI_THREAD();
 
-										  CefWindowHandle hwnd = browser->GetHost()->GetWindowHandle();
-										  SetWindowText(hwnd, std::wstring(title).c_str());
+		CefWindowHandle hwnd = browser->GetHost()->GetWindowHandle();
+		if(m_browserId == browser->GetIdentifier())
+		{
+			hwnd = ::GetParent(hwnd);
+		}
+		::SetWindowText(hwnd, std::wstring(title).c_str());
 	}
 
 	bool IBrowserHandler::DoClose(CefRefPtr<CefBrowser> browser)

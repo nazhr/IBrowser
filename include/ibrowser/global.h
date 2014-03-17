@@ -40,7 +40,7 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 	{
 		switch(message)
 		{
-		case WM_CHAR :	
+		case WM_CHAR : 
 			{
 				if (wParam == VK_RETURN && ibrowser::
 					IBrowserSingle::Instance().getCurrentIBrowserHandler()) 
@@ -76,11 +76,16 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 					::GetClientRect(hWnd, &rect);
 					
 					int x = 0;
+
 					editWnd = CreateWindow(L"EDIT", 0,
 						WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT |
 						ES_AUTOVSCROLL | ES_AUTOHSCROLL /*| WS_DISABLED*/,
-						x, 0, rect.right - BUTTON_WIDTH * 4,
+						x, 0, rect.right,
 						URLBAR_HEIGHT, hWnd, 0, ibrowser::IBrowserWindow::GetCurrentAppHandler(), 0);
+
+					// set browser screen size 
+					// set browser top pos
+					rect.top += URLBAR_HEIGHT;
 
 					// Assign the edit window's WNDPROC to this function so that we can
 					// capture the enter key
@@ -118,11 +123,16 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 						RECT rect;
 						GetClientRect(hWnd, &rect);
 
+						rect.top += URLBAR_HEIGHT;
+
 						HDWP hdwp = BeginDeferWindowPos(1);
 
+						// edit window ps
+						hdwp = DeferWindowPos(hdwp, editWnd, NULL, rect.left, rect.top - URLBAR_HEIGHT, 
+							rect.right -  rect.left, URLBAR_HEIGHT, SWP_NOZORDER);
+						// browser window ps
 						hdwp = DeferWindowPos(hdwp, hwnd, NULL,
-							rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
-							SWP_NOZORDER);
+							rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);
 						EndDeferWindowPos(hdwp);
 					}
 				}
@@ -138,17 +148,24 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 
 			case WM_CLOSE :
 				{
-					if (ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler() 
-						&& !ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler()->IsClosing()) 
+					try
 					{
-						CefRefPtr<CefBrowser> browser = ibrowser::IBrowserSingle::Instance().
-							getCurrentIBrowserHandler()->GetBrowser();
-						if (browser.get()) {
-							// Let the browser window know we are about to destroy it.
-							browser->GetHost()->CloseBrowser(false);
-							//PostQuitMessage(0);
-							return 0;
+						if (ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler() 
+							&& !ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler()->IsClosing()) 
+						{
+							CefRefPtr<CefBrowser> browser = ibrowser::IBrowserSingle::Instance().
+								getCurrentIBrowserHandler()->GetBrowser();
+							if (browser.get()) {
+								// Let the browser window know we are about to destroy it.
+								browser->GetHost()->CloseBrowser(false);
+								//PostQuitMessage(0);
+								return 0;
+							}
 						}
+					}
+					catch (std::exception &e)
+					{
+						MessageBoxA(NULL, e.what(), "IBrowser Window Called System Error : ", MB_OK);
 					}
 				}
 				break;

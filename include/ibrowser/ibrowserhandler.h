@@ -38,34 +38,39 @@ namespace ibrowser
 		 * @brief : cef inherit
 		 */
 		// CefClient methods:
-		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler()	OVERRIDE 
+		virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler()			OVERRIDE 
 		{
 			return this;
 		}
-		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler()	OVERRIDE 
+		virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler()			OVERRIDE 
 		{
 			return this;
 		}
-		virtual CefRefPtr<CefLoadHandler> GetLoadHandler()			OVERRIDE 
+		virtual CefRefPtr<CefLoadHandler> GetLoadHandler()					OVERRIDE 
 		{
 			return this;
 		}
+
+		// CefDisplayHandler methods : address change
+		virtual void OnAddressChange(	CefRefPtr<CefBrowser>	browser, 
+										CefRefPtr<CefFrame>		frame, 
+										const CefString			&url)		OVERRIDE;
 
 		// CefDisplayHandler methods:
-		virtual void OnTitleChange(CefRefPtr<CefBrowser> browser,
-			const CefString& title)									OVERRIDE;
+		virtual void OnTitleChange(	CefRefPtr<CefBrowser>	browser,
+									const CefString			&title)			OVERRIDE;
 
 		// CefLifeSpanHandler methods:
-		virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser)	OVERRIDE;
-		virtual bool DoClose(CefRefPtr<CefBrowser> browser)			OVERRIDE;
-		virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser)	OVERRIDE;
+		virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser)			OVERRIDE;
+		virtual bool DoClose(CefRefPtr<CefBrowser> browser)					OVERRIDE;
+		virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser)			OVERRIDE;
 
 		// CefLoadHandler methods:
 		virtual void OnLoadError(CefRefPtr<CefBrowser> browser,
 			CefRefPtr<CefFrame> frame,
 			ErrorCode errorCode,
 			const CefString& errorText,
-			const CefString& failedUrl)								OVERRIDE;
+			const CefString& failedUrl)										OVERRIDE;
 
 		// Request that all existing browser windows close.
 		void CloseAllBrowsers(bool force_close);
