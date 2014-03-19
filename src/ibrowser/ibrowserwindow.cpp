@@ -27,12 +27,6 @@
 namespace ibrowser
 {
 	/*
-	 * @brief : ibrowser single static init .
-	 */
-	boost::scoped_ptr<ibrowser::IBrowserSingle> IBrowserSingle::m_ibrowser_sinlge(0);
-	boost::once_flag							IBrowserSingle::m_once_flag = BOOST_ONCE_INIT;
-
-	/*
 	 * @brief : ibrowser window
 	 */
 	IBrowserWindow::IBrowserWindow()

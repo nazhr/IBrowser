@@ -21,6 +21,8 @@ set(IBR_SRCS
 	ibrowserhandler.cpp
 	ibrowserclient.cpp
 	ibrowserwindow.cpp
+	ibrowsersingle.cpp
+	ibrowsertab.cpp
 	global.cpp
    )
 

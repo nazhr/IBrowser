@@ -38,69 +38,6 @@ namespace ibrowser
 const static wchar_t CLASS_NAME[]  = L"IBrowser";
 
 	/*
-	 * @brief : single ibrowser
-	 */
-	class IBrowserSingle
-	{
-	public :
-		IBrowserSingle()
-			:	m_ibrowser_app(NULL), 
-				// m_ibrowser_client(new IBrowserClient),
-				m_ibrowser_handler(NULL)
-		{
-			
-		}
-		~IBrowserSingle()
-		{
-			
-		}
-
-		// static
-		static IBrowserSingle& Instance()
-		{
-			boost::call_once(IBrowserSingle::init, IBrowserSingle::m_once_flag);
-			return *m_ibrowser_sinlge;
-		}
-		static void init()
-		{
-			m_ibrowser_sinlge.reset(new IBrowserSingle);
-		}
-
-		IBrowserApp* getCurrentIBrowserApp()
-		{
-			return m_ibrowser_app.get();
-		}
-
-		/*IBrowserClient* getCurrentIBrowserClient()
-		{
-			return m_ibrowser_client.get();	
-		}*/
-
-		IBrowserHandler* getCurrentIBrowserHandler()
-		{
-			return m_ibrowser_handler.get();	
-		}
-
-		void setCurrentIBrowserHandler(IBrowserHandler *handler)
-		{
-			// m_ibrowser_handler->Release();
-			m_ibrowser_handler = handler;
-		}
-
-	/*
-	 * @brief : ibrowser ptr
-	 */
-	private : 
-		CefRefPtr<ibrowser::IBrowserApp>					m_ibrowser_app;
-		// CefRefPtr<ibrowser::IBrowserClient>					m_ibrowser_client;
-		CefRefPtr<ibrowser::IBrowserHandler>				m_ibrowser_handler;
-
-	private :
-		static boost::scoped_ptr<ibrowser::IBrowserSingle>	m_ibrowser_sinlge;
-		static boost::once_flag								m_once_flag;
-	};
-
-	/*
 	 * @brief : ibrowser window class
 	 */
 	class IBrowserWindow : public virtual MessageUtils

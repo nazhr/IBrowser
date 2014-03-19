@@ -16,6 +16,7 @@
 #define R_IBROWSER_GLOBAL_H
 
 // ibrowser
+#include "ibrowser/ibrowsersingle.h"
 #include "ibrowser/ibrowserhandler.h"
 #include "ibrowser/ibrowserwindow.h"
 
