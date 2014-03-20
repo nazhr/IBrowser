@@ -21,6 +21,7 @@
 // vc
 #include <Windows.h>
 
+// boost
 #include "boost/thread/once.hpp"
 #include "boost/scoped_ptr.hpp"
 
@@ -30,6 +31,9 @@ namespace ibrowser
 	 * @brief : ibrowser window
 	 */
 	IBrowserWindow::IBrowserWindow()
+		:	m_lpCmdLine(0),
+			m_nCmdShow(0),
+			m_hWnd(0)
 	{
 
 	}

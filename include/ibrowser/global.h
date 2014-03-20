@@ -17,26 +17,117 @@
 
 // ibrowser
 #include "ibrowser/ibrowsersingle.h"
-#include "ibrowser/ibrowserhandler.h"
+#include "ibrowser/ibrowsertab.h"
 #include "ibrowser/ibrowserwindow.h"
+#include "ibrowser/ibrowserhandler.h"
 
 // cef
 #include "include/cef_app.h"
 #include "include/utils/resource.h"
 
-LRESULT				CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+static LRESULT				CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
+static LRESULT				CALLBACK ChildWindowProc(HWND, UINT, WPARAM, LPARAM);
+static INT_PTR CALLBACK		About(HWND, UINT, WPARAM, LPARAM);
 
-HWND				hMessageWnd = NULL;
+static HWND					hMessageWnd = NULL;
+
+// temp instance ibrowser tab
+static ibrowser::IBrowserTab *ibrowser_tab = new ibrowser::IBrowserTab();
+static WNDPROC editWndOldProc = NULL;
 
 LRESULT CALLBACK WindowProc(HWND	hWnd, 
 							UINT	message, 
 							WPARAM	wParam, 
 							LPARAM	lParam) 
 {
-	static HWND backWnd = NULL, forwardWnd = NULL, reloadWnd = NULL,
-		stopWnd = NULL, editWnd = NULL;
-	static WNDPROC editWndOldProc = NULL;
+	switch (message) {
+		case WM_CREATE :
+			{
+				ibrowser::IBrowserSingle::Instance().setCurrentIBrowserHandler(new ibrowser::IBrowserHandler());
+				ibrowser_tab->RegisterTabClass();
+				bool status = ibrowser_tab->CreateTab(hWnd);
+				if(!status)
+					PostQuitMessage(0);
+				return 0;
+			}
+		case WM_DESTROY:
+			// PostQuitMessage(0);
+			return 0;
+
+		case WM_SIZE :
+			{
+				HWND tab = ibrowser_tab->GetTabHWnd();
+				if(tab)
+				{
+					RECT rect;
+					GetClientRect(hWnd, &rect);
+
+					HDWP hdwp = BeginDeferWindowPos(1);
+
+					// tab window ps
+
+					hdwp = DeferWindowPos(hdwp, tab, NULL, 
+						0, 0/*TAB_BTN_HEIGTH*/, rect.right - rect.left, rect.bottom/* - TAB_BTN_HEIGTH*/, SWP_NOZORDER);
+					EndDeferWindowPos(hdwp);	
+				}
+			}
+
+			break;
+
+		case WM_ERASEBKGND :
+			if (ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler()) {
+				// Dont erase the background if the browser window has been loaded
+				// (this avoids flashing)
+				return 0;
+			}
+			break;
+
+		case WM_CLOSE :
+			{
+				try
+				{
+					if (ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler() 
+						&& !ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler()->IsClosing()) 
+					{
+						CefRefPtr<CefBrowser> browser = ibrowser::IBrowserSingle::Instance().
+							getCurrentIBrowserHandler()->GetBrowser();
+						if (browser.get()) {
+							// Let the browser window know we are about to destroy it.
+							browser->GetHost()->CloseBrowser(false);
+							//PostQuitMessage(0);
+							return 0;
+						}
+					}
+				}
+				catch (std::exception &e)
+				{
+					MessageBoxA(NULL, e.what(), "IBrowser Window Called System Error : ", MB_OK);
+				}
+			}
+			break;
+
+		case WM_PAINT :
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hWnd, &ps);
+			EndPaint(hWnd, &ps);
+			return 0;
+		
+	}
+	
+
+	return DefWindowProc(hWnd, message, wParam, lParam);	
+}
+
+/*
+ * @brief : child window process
+ */
+LRESULT CALLBACK ChildWindowProc(	HWND	hWnd, 
+									UINT	message, 
+									WPARAM	wParam, 
+									LPARAM	lParam) 
+{
+	HWND	editWnd = ibrowser_tab->GetEditHWnd();
+	
 	if(hWnd == editWnd)
 	{
 		switch(message)
@@ -70,42 +161,7 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 			case WM_CREATE :
 				{
 					ibrowser::IBrowserSingle::Instance().setCurrentIBrowserHandler(new ibrowser::IBrowserHandler());
-					ibrowser::IBrowserHandler *handler = ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler();
-					handler->SetMainHwnd(hWnd);
-
-					RECT			rect;
-					::GetClientRect(hWnd, &rect);
-					
-					int x = 0;
-
-					editWnd = CreateWindow(L"EDIT", 0,
-						WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT |
-						ES_AUTOVSCROLL | ES_AUTOHSCROLL /*| WS_DISABLED*/,
-						x, 0, rect.right,
-						URLBAR_HEIGHT, hWnd, 0, ibrowser::IBrowserWindow::GetCurrentAppHandler(), 0);
-
-					// set browser screen size 
-					// set browser top pos
-					rect.top += URLBAR_HEIGHT;
-
-					// Assign the edit window's WNDPROC to this function so that we can
-					// capture the enter key
-					editWndOldProc =
-						reinterpret_cast<WNDPROC>(GetWindowLongPtr(editWnd, GWLP_WNDPROC));
-					SetWindowLongPtr(editWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WindowProc));
-					handler->SetEditHwnd(editWnd);
-					handler->SetButtonHwnds(backWnd, forwardWnd, reloadWnd, stopWnd);
-
-					CefBrowserSettings browserSettings;
-					CefString(&browserSettings.default_encoding) = "utf-8";
-					browserSettings.file_access_from_file_urls = STATE_ENABLED;
-					browserSettings.universal_access_from_file_urls = STATE_ENABLED;
-					CefWindowInfo	info;
-					info.SetAsChild(hWnd, rect);
-
-					rect.top += URLBAR_HEIGHT;
-					
-					CefBrowserHost::CreateBrowser(info, handler, handler->GetStartupURL(), browserSettings);
+					ibrowser_tab->CreateTabMember(hWnd);
 					return 0;
 				}
 			case WM_DESTROY:
@@ -131,6 +187,8 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 						// edit window ps
 						hdwp = DeferWindowPos(hdwp, editWnd, NULL, rect.left, rect.top - URLBAR_HEIGHT, 
 							rect.right -  rect.left, URLBAR_HEIGHT, SWP_NOZORDER);
+						RECT rect_edit;
+						GetClientRect(editWnd, &rect_edit);
 						// browser window ps
 						hdwp = DeferWindowPos(hdwp, hwnd, NULL,
 							rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);

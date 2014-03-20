@@ -88,7 +88,7 @@ namespace ibrowser
 		CefWindowHandle hwnd = browser->GetHost()->GetWindowHandle();
 		if(m_browserId == browser->GetIdentifier())
 		{
-			hwnd = ::GetParent(hwnd);
+			hwnd = ::GetParent(::GetParent(hwnd));
 		}
 		::SetWindowText(hwnd, std::wstring(title).c_str());
 	}

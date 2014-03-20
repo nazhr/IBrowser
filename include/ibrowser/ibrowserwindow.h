@@ -31,10 +31,6 @@
 namespace ibrowser
 {
 
-#define MAX_LOADSTRING	100
-#define MAX_URL_LENGTH  255
-#define URLBAR_HEIGHT	24
-
 const static wchar_t CLASS_NAME[]  = L"IBrowser";
 
 	/*
@@ -56,7 +52,7 @@ const static wchar_t CLASS_NAME[]  = L"IBrowser";
 			m_instance_ptr.reset(new IBrowserWindow);
 		}
 
-		static HINSTANCE GetCurrentAppHandler()
+		static HINSTANCE GetCurrentAppHandler()		// get current app hInstance
 		{
 			return m_hInstance;	
 		}
@@ -91,6 +87,11 @@ const static wchar_t CLASS_NAME[]  = L"IBrowser";
 		 *    "格式正确的"小图标。
 		 */
 		ATOM RegisterWindowClass();
+
+		/*
+		 * @brief : get main window handler
+		 */
+		inline HWND GetMainWindowHandler();
 		
 	private :
 		LPSTR						m_lpCmdLine;
@@ -104,6 +105,11 @@ const static wchar_t CLASS_NAME[]  = L"IBrowser";
 		static	HINSTANCE										m_hInstance;
 		
 	};
+
+	inline HWND IBrowserWindow::GetMainWindowHandler()
+	{
+		return m_hWnd;
+	}
 }
 
 #endif // R_BROWSER_IBROWSERWIN_H
