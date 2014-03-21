@@ -38,7 +38,22 @@ add_executable(ibrowser WIN32 ${IBR_SRCS})
 TARGET_LINK_LIBRARIES(ibrowser
 	general
 	#utils
+	kernel32.lib
+	user32.lib
+	shell32.lib
+	uuid.lib
+	ole32.lib
+	advapi32.lib
 	ws2_32.lib
+	gdi32.lib
+	comdlg32.lib
+	oleaut32.lib
+	imm32.lib
+	winmm.lib
+	winspool.lib
+	qtmaind.lib
+	QtCored.lib
+	QtGuid.lib
 	${IBROWSER_SOURCE_DIR}/lib/libcef.lib
 	debug
 	${IBROWSER_SOURCE_DIR}/lib/libcef_dll_wrapper_debug.lib

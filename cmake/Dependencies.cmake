@@ -20,6 +20,7 @@ getenv_path(IBROWSER_DEP_DIRS)
 FIND_PACKAGE(Threads REQUIRED)
 
 message(STATUS "BOOST_SEARCH_PATH: " ${BOOST_SEARCH_PATH})
+message(STATUS "QT_DEP_DIR : " ${QT_DEP_DIR})
 
 # Find Boost
 set(Boost_USE_STATIC_LIBS       ON)
@@ -48,6 +49,21 @@ if (Boost_FOUND)
 	link_directories(${Boost_LIBRARY_DIRS})
 	# Don't use old boost versions interfaces
 	ADD_DEFINITIONS(-DBOOST_FILESYSTEM_NO_DEPRECATED)
+endif ()
+
+SET(QT_MIN_VERSION "4.5.0")
+SET(CMAKE_PACKAGE_QTGUI TRUE)
+FIND_PACKAGE(Qt4 REQUIRED)
+
+if(NOT QT4_FOUND)
+	MESSAGE(SEND_ERROR "Failed to find Qt 4.5 or greater.")
+endif(NOT QT4_FOUND)
+
+if(QT4_FOUND)
+	INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR})
+	INCLUDE(${QT_USE_FILE})
+	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+	link_directories("${QT_DEP_DIR}/lib")
 endif ()
 
 #message(STATUS "start find_package wxWidgets")

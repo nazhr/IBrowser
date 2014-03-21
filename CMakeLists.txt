@@ -71,6 +71,10 @@ if (NOT Boost_FOUND)
 	MESSAGE(FATAL_ERROR "--> Could not locate required Boost files - Please check ${BOOST_SEARCH_PATH}")
 endif()
 
+if(NOT QT4_FOUND)
+  MESSAGE(FATAL_ERROR "--> Failed to find Qt 4.5 or greater. - Please check ${QT_DEP_DIR}")
+endif(NOT QT4_FOUND)
+
 #if (NOT wxWidgets_FOUND)
 #	MESSAGE(FATAL_ERROR "--> Could not locate required wxWidgets files - Please check ${wxWidgets_ROOT_DIR}")
 #endif()
