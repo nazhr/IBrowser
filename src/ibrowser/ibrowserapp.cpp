@@ -17,9 +17,13 @@
 #include <string>
 
 // cef
-#include "include/utils/util.h"
-#include "include/cef_browser.h"
-#include "include/cef_command_line.h"
+#include <include/utils/util.h>
+#include <include/cef_browser.h>
+#include <include/cef_command_line.h>
+
+// Qt
+#include <QtGui/QApplication>
+#include <QtGui/QMessageBox>
 
 namespace ibrowser
 {
@@ -30,6 +34,9 @@ namespace ibrowser
 
 	void IBrowserApp::OnContextInitialized() 
 	{
-		
+		QMessageBox qmess;
+		qmess.setWindowTitle(QApplication::translate("IBrowser IMainWindow System Error : ", 
+			"IBrowser IMainWindow System Error : "));
+		qmess.setText(QApplication::translate("tst", "test"));
 	}
 }

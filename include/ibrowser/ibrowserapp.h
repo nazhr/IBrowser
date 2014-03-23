@@ -18,18 +18,25 @@
 namespace ibrowser
 {
 	class IBrowserApp:	public CefApp, 
-						public CefBrowserProcessHandler
+						public CefBrowserProcessHandler,
+						public CefRenderProcessHandler
 	{
 	public : 
 		IBrowserApp();
 		virtual ~IBrowserApp();
 
-	private :	// cef
+	private :	// cef		
 		// CefApp methods:
 		virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
 			OVERRIDE 
 		{ 
 			return this;
+		}
+
+		virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler()
+			OVERRIDE 
+		{ 
+			return this; 
 		}
 
 		// CefBrowserProcessHandler methods:

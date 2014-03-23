@@ -24,8 +24,18 @@ set(IBR_SRCS
 	ibrowsersingle.cpp
 	ibrowsertab.cpp
 	global.cpp
+	imainwindow.cpp
    )
 
+SET(IBROWSER_SOURCES 	imainwindow.cpp) 
+SET(IBROWSER_HEADERS 	imainwindow.h) 
+SET(IBROWSER_FORMS 		ibrowser.ui) 
+SET(IBROWSER_RESOURCES 	ibrowser.qrc) 
+
+QT4_WRAP_CPP(IBROWSER_HEADERS_MOC ${IBROWSER_HEADERS}) 
+QT4_WRAP_UI(IBROWSER_FORMS_HEADERS ${IBROWSER_FORMS}) 
+QT4_ADD_RESOURCES(IBROWSER_RESOURCES_RCC ${IBROWSER_RESOURCES}) 
+   
 include_directories(${IBROWSER_SOURCE_DIR}/include
 					${IBROWSER_SOURCE_DIR}/include/cef
 					${IBROWSER_SOURCE_DIR}/include/utils
@@ -34,7 +44,10 @@ include_directories(${IBROWSER_SOURCE_DIR}/include
 add_definitions(-DCURL_STATICLIB)
 
 IF (WIN32)
-add_executable(ibrowser WIN32 ${IBR_SRCS})
+add_executable(ibrowser WIN32 	${IBR_SRCS}
+								${IBROWSER_HEADERS_MOC}
+								${IBROWSER_FORMS_HEADERS}
+								${IBROWSER_RESOURCES_RCC})
 TARGET_LINK_LIBRARIES(ibrowser
 	general
 	#utils
@@ -73,7 +86,10 @@ $<TARGET_FILE_DIR:ibrowser>
 #set_target_properties(ibrowser PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /subsystem:windows") 
 ELSE(WIN32)
-add_executable(ibrowser ${IBR_SRCS})
+	add_executable(ibrowser 	${IBR_SRCS}
+								${IBROWSER_HEADERS_MOC}
+								${IBROWSER_FORMS_HEADERS}
+								${IBROWSER_RESOURCES_RCC})
 #Message(STATUS "OPENCL_LIBRARIES : ${OPENCL_INCLUDE_DIR}")
-TARGET_LINK_LIBRARIES(ibrowser)
+	TARGET_LINK_LIBRARIES(ibrowser)
 ENDIF(WIN32)

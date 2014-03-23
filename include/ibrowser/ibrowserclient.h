@@ -12,12 +12,21 @@
 #ifndef R_BROWSER_IBROWSERCLIENT_H
 #define R_BROWSER_IBROWSERCLIENT_H
 
+// ibrowser
+#include "ibrowser/ibrowserapp.h"
+#include "ibrowser/ibrowsertab.h"
+
 // cef
-#include "include/cef_base.h"
+#include <include/cef_base.h>
+#include <include/utils/resource.h>
 
 // boost
 #include "boost/scoped_ptr.hpp"
 #include <boost/thread/once.hpp>
+
+// Qt
+#include <QtGui/QWidget>
+#include <QtGui/QMessageBox>
 
 
 namespace ibrowser
@@ -27,6 +36,21 @@ namespace ibrowser
 	public :
 		IBrowserClient();
 		virtual ~IBrowserClient();
+	
+	public : // non staic function member
+		int		Initialize(QWidget *parent);
+		void	Quit()
+		{
+			// cef close borwser
+			CefShutdown();
+		}
+
+	private : // static member
+		static	HINSTANCE							m_hInstance;
+		static	CefRefPtr<ibrowser::IBrowserApp>	m_cef_app;
+
+	private :
+		IBrowserTab									*m_ibrowser_tab;
 		
 	};
 }

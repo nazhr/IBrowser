@@ -10,22 +10,26 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/ibrowserwindow.h"
+#include "ibrowser/imainwindow.h"
+#include "ibrowser/ibrowserclient.h"
 
 // vc
-#include <windows.h>
+#include <Windows.h>
 
-int WINAPI WinMain(	HINSTANCE hInstance,
-					HINSTANCE hPrevInstance,
-					LPSTR    lpCmdLine,
-					int       nCmdShow) 
+// Qt
+#include <QtGui/QApplication>
+#include <QtGui/QWidget>
+
+int main(int argc, char **argv)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
+	QApplication				app(argc, argv);
+	ibrowser::IBrowserClient	ibrowser_client;
+	IMainwindow					parent;
+	int							result = ibrowser_client.Initialize(&parent);
 
-	ibrowser::IBrowserWindow ibwin = ibrowser::IBrowserWindow::GetCurrentIBorwserWindow();
-	bool status = ibwin.initialize(hInstance, lpCmdLine, nCmdShow);
+	result = app.exec();
 
-	
-	return status;
+	ibrowser_client.Quit();
+
+	return result;
 }

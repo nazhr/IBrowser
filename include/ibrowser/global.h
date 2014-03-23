@@ -24,7 +24,7 @@
 // cef
 #include "include/cef_app.h"
 #include "include/utils/resource.h"
-
+/*
 static LRESULT				CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 static LRESULT				CALLBACK ChildWindowProc(HWND, UINT, WPARAM, LPARAM);
 static INT_PTR CALLBACK		About(HWND, UINT, WPARAM, LPARAM);
@@ -67,7 +67,7 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 					// tab window ps
 
 					hdwp = DeferWindowPos(hdwp, tab, NULL, 
-						0, 0/*TAB_BTN_HEIGTH*/, rect.right - rect.left, rect.bottom/* - TAB_BTN_HEIGTH*/, SWP_NOZORDER);
+						0, 0, rect.right - rect.left, rect.bottom SWP_NOZORDER);
 					EndDeferWindowPos(hdwp);	
 				}
 			}
@@ -116,11 +116,12 @@ LRESULT CALLBACK WindowProc(HWND	hWnd,
 	
 
 	return DefWindowProc(hWnd, message, wParam, lParam);	
-}
+}*/
 
 /*
  * @brief : child window process
  */
+ /*
 LRESULT CALLBACK ChildWindowProc(	HWND	hWnd, 
 									UINT	message, 
 									WPARAM	wParam, 
@@ -241,10 +242,11 @@ LRESULT CALLBACK ChildWindowProc(	HWND	hWnd,
 
 	return DefWindowProc(hWnd, message, wParam, lParam);	
 }
-
+*/
 /*
  * "关于"框的消息处理程序。
  */
+ /*
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
@@ -263,5 +265,5 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return (INT_PTR)FALSE;
 }
-
+*/
 #endif // R_IBROWSER_GLOBAL_H

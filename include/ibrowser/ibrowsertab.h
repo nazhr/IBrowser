@@ -14,10 +14,15 @@
 
 // ibrowser utils
 #include "utils/messagebox.h"
+#include "ibrowser/imainwindow.h"
 
 // cef
-#include "include/cef_app.h"
-#include "include/utils/resource.h"
+#include <include/cef_app.h>
+#include <include/utils/resource.h>
+
+// Qt 
+#include <QtGui/QWidget>
+
 
 namespace ibrowser
 {
@@ -29,55 +34,25 @@ namespace ibrowser
 #define		TAB_BTN_WIDTH	124
 #define		TAB_BTN_HEIGTH	24
 
-	class	IBrowserTab : public virtual MessageUtils
+	class	IBrowserTab
 	{
 	public :
 		IBrowserTab();
 		~IBrowserTab();
 
 	public :
-		bool			CreateTab(HWND hWnd);
-		void			CreateTabMember(HWND tab_hWnd);
-		ATOM			RegisterTabClass();
-
-		inline	HWND	GetEditHWnd();
-		inline	HWND	GetTabHWnd();
-		// inline	WNDPROC GetEditWndOldProc();
+		bool			CreateTab(QWidget *parent);
+		void			CreateBrowser(HWND tab_hWnd);
+		bool			BrowserLoadUrl(const std::wstring &url);
+		
 
 	private : // non static member 
-		HWND			m_tab_hWnd;
-		// HWND			m_editWnd;
-		HWND			m_backWnd;
-		HWND			m_forwardWnd;
-		HWND			m_reloadWnd;
-		HWND			m_stopWnd;
+		QWidget			*m_parent_window;
 
 	private : // static member 
-		static HWND						m_editWnd;
-		/*// static WNDPROC					m_editWndOldProc;
-		static HWND						m_backWnd;
-		static HWND						m_forwardWnd;
-		static HWND						m_reloadWnd;
-		static HWND						m_stopWnd;*/
+		
 
 	};
-
-	inline HWND IBrowserTab::GetEditHWnd()
-	{
-		return m_editWnd;
-	}
-
-	inline HWND IBrowserTab::GetTabHWnd()
-	{
-		return m_tab_hWnd;
-	}
-	/*
-
-	inline WNDPROC IBrowserTab::GetEditWndOldProc()
-	{
-		return m_editWndOldProc;
-	}
-	*/
 
 }
 

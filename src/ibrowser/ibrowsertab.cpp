@@ -10,137 +10,82 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/global.h"
 #include "ibrowser/ibrowsertab.h"
-#include "ibrowser/ibrowserwindow.h"
 #include "ibrowser/ibrowsersingle.h"
-// vc
-#include <Windows.h>
+#include "ibrowser/ibrowserhandler.h"
+
+// Qt
+#include <QtGui/QWidget>
+#include <QtGui/QMessageBox>
+#include <QtGui/QApplication>
+#include <QtGui/QLineEdit>
+#include <QtCore/QSize>
+
+// cef
+#include <include/cef_base.h>
+#include <include/utils/resource.h>
 
 namespace ibrowser
 {
-	// init static hwnd
-	HWND						IBrowserTab::m_editWnd = NULL;
-	/*// WNDPROC						IBrowserTab::m_editWndOldProc = NULL;
-	HWND						IBrowserTab::m_backWnd = NULL;
-	HWND						IBrowserTab::m_forwardWnd = NULL;
-	HWND						IBrowserTab::m_reloadWnd = NULL;
-	HWND						IBrowserTab::m_stopWnd = NULL;*/
-
-	IBrowserTab::IBrowserTab(){}
-	IBrowserTab::~IBrowserTab(){}
-
-	/*
-	 * @ brief : register tab window class
-	 */
-	ATOM IBrowserTab::RegisterTabClass()
+	IBrowserTab::IBrowserTab()
+		:	m_parent_window(0)
 	{
-		HINSTANCE				hInstance = IBrowserWindow::GetCurrentAppHandler();
-		// const static wchar_t	CLASS_NAME[]  = L"Tab";
-		WNDCLASSEX		wcex;
-
-		wcex.cbSize = sizeof(WNDCLASSEX);
-
-		wcex.style         = CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc   = ChildWindowProc;
-		wcex.cbClsExtra    = 0;
-		wcex.cbWndExtra    = 0;
-		wcex.hInstance     = hInstance;
-		wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CEFCLIENT));
-		wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-		wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-		wcex.lpszMenuName  = MAKEINTRESOURCE(IDC_CEFCLIENT);
-		wcex.lpszClassName = L"Tab";
-		wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-		return RegisterClassEx(&wcex);
 
 	}
+	IBrowserTab::~IBrowserTab(){}
 
-	/*
-	 * @brief : create browser tab
-	 */
-	bool IBrowserTab::CreateTab(HWND child_hWnd)
+	bool IBrowserTab::CreateTab(QWidget *parent)
 	{
 		try
 		{
-			IBrowserHandler *handler = ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler();
-			HINSTANCE		hInstance = IBrowserWindow::GetCurrentAppHandler();
-			static WNDPROC	editWndOldProc = NULL;
-			if(child_hWnd)
-			{
-				/*
-				 * @brief : get root window size
-				 */
-				RECT		rect_root;
-				::GetClientRect(child_hWnd, &rect_root);
-				
-				m_tab_hWnd = ::CreateWindowEx(	NULL, 
-											L"Tab", NULL, 
-											(WS_CHILD | WS_VISIBLE /*| WS_BORDER */| ES_LEFT |
-											ES_AUTOVSCROLL | ES_AUTOHSCROLL), 
-											0, 0, 
-											rect_root.right - rect_root.left, 
-											rect_root.bottom - rect_root.top,  
-											child_hWnd, 
-											NULL, 
-											hInstance, 
-											NULL);
+			// ibrowser and cef handler
+			CefRefPtr<ibrowser::IBrowserHandler> handler = new ibrowser::IBrowserHandler();
+			ibrowser::IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
 
-				if(!m_tab_hWnd)
-					return false;
-				ShowWindow(m_tab_hWnd, 1/*m_nCmdShow*/);
-				UpdateWindow(m_tab_hWnd);
-				
-			}
+			m_parent_window = parent;
+			QSize		size = parent->size();
 
+			// create sub window
+			QWidget		sub_window(parent);
+			// sub window setting
+			sub_window.resize(size.width(), size.height());
+			// edit box setting
+			QLineEdit	editHWnd(&sub_window);
+			editHWnd.resize(size.width(), URLBAR_HEIGHT);
+			// hwnd window
+			HWND		tab_hWnd = sub_window.winId();
+			
+			sub_window.show();
+			CreateBrowser(tab_hWnd);
+
+			parent->show();
+			// cef message loop
+			CefRunMessageLoop();
+			
 		}
 		catch(std::exception &e)
 		{
-			MessageBoxDef(NULL, e.what(), "IBrowser Tab System Error : ");
+			QMessageBox qmess;
+			qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
+				"IBrowser IMainWindow System Error : "));
+			qmess.setText(QApplication::translate(e.what(), e.what()));
 		}
-		return true;
+		return 1;
 	}
 
-	/*
-	 * @brief : create browser tab member
-	 */
-	void IBrowserTab::CreateTabMember(HWND tab_hWnd)
+	void	IBrowserTab::CreateBrowser(HWND tab_hWnd)
 	{
 		try
 		{
-			IBrowserHandler *handler = ibrowser::IBrowserSingle::Instance().getCurrentIBrowserHandler();
-			HINSTANCE		hInstance = IBrowserWindow::GetCurrentAppHandler();
-			handler->SetMainHwnd(tab_hWnd);
-
+			// crate window
+			CefRefPtr<ibrowser::IBrowserHandler> handler = ibrowser
+				::IBrowserSingle::Instance().getCurrentIBrowserHandler();
 			RECT		rect_tab;
 			::GetClientRect(tab_hWnd, &rect_tab);
 
-			int			x = 0;
-
-			m_editWnd = CreateWindowEx(	WS_EX_CLIENTEDGE, 
-										L"EDIT", L"EDIT",
-										(WS_CHILD | WS_VISIBLE | WS_BORDER | ES_LEFT |
-										ES_AUTOVSCROLL | ES_AUTOHSCROLL),
-										x, 0, rect_tab.right, URLBAR_HEIGHT, 
-										tab_hWnd, 
-										NULL, 
-										hInstance, 
-										NULL);
-
-			if(!m_editWnd)
-				return ;
 			// set browser screen size 
 			// set browser top pos
 			rect_tab.top += URLBAR_HEIGHT;
-
-			// Assign the edit window's WNDPROC to this function so that we can
-			// capture the enter key
-			editWndOldProc =
-				reinterpret_cast<WNDPROC>(GetWindowLongPtr(m_editWnd, GWLP_WNDPROC));
-			SetWindowLongPtr(m_editWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(ChildWindowProc));
-			handler->SetEditHwnd(m_editWnd);
-			// handler->SetButtonHwnds(m_backWnd, m_forwardWnd, m_reloadWnd, m_stopWnd);
 
 			CefBrowserSettings browserSettings;
 			CefString(&browserSettings.default_encoding) = "utf-8";
@@ -149,14 +94,29 @@ namespace ibrowser
 			CefWindowInfo	info;
 			info.SetAsChild(tab_hWnd, rect_tab);
 
-			rect_tab.top += URLBAR_HEIGHT;
+			CefBrowserHost::CreateBrowser(info, handler.get(), handler->GetStartupURL(), browserSettings);
 
-			CefBrowserHost::CreateBrowser(info, handler, handler->GetStartupURL(), browserSettings);
 		}
 		catch(std::exception &e)
 		{
-			MessageBoxDef(NULL, e.what(), "IBrowser Tab System Error : ");
+			QMessageBox qmess;
+			qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
+				"IBrowser IMainWindow System Error : "));
+			qmess.setText(QApplication::translate(e.what(), e.what()));
 		}
+	}
+
+	bool IBrowserTab::BrowserLoadUrl(const std::wstring &url)
+	{
+		IBrowserHandler				*handler = ibrowser::IBrowserSingle::
+									Instance().getCurrentIBrowserHandler();
+		if(!url.empty() && handler)
+		{
+			CefRefPtr<CefBrowser>	browser = handler->GetBrowser();
+			browser->GetMainFrame()->LoadURL(url);
+			return true;
+		}	
+		return false;
 	}
 	
 }
