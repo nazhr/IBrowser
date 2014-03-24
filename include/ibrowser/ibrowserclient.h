@@ -28,31 +28,27 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMessageBox>
 
-
-namespace ibrowser
+class IBrowserClient
 {
-	class IBrowserClient
+public :
+	IBrowserClient();
+	virtual ~IBrowserClient();
+
+public : // non staic function member
+	int		Initialize(QWidget *parent);
+	void	Quit()
 	{
-	public :
-		IBrowserClient();
-		virtual ~IBrowserClient();
+		// cef close borwser
+		CefShutdown();
+	}
+
+private : // static member
+	static	HINSTANCE								m_hInstance;
+	static	CefRefPtr</*ibrowser::*/IBrowserApp>	m_cef_app;
+
+private :
+	IBrowserTab										*m_ibrowser_tab;
 	
-	public : // non staic function member
-		int		Initialize(QWidget *parent);
-		void	Quit()
-		{
-			// cef close borwser
-			CefShutdown();
-		}
-
-	private : // static member
-		static	HINSTANCE							m_hInstance;
-		static	CefRefPtr<ibrowser::IBrowserApp>	m_cef_app;
-
-	private :
-		IBrowserTab									*m_ibrowser_tab;
-		
-	};
-}
+};
 
 #endif // R_BROWSER_IBROWSERCLIENT_H

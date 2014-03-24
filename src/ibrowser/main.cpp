@@ -23,9 +23,26 @@
 int main(int argc, char **argv)
 {
 	QApplication				app(argc, argv);
-	ibrowser::IBrowserClient	ibrowser_client;
+	IBrowserClient				ibrowser_client;
 	IMainwindow					parent;
-	int							result = ibrowser_client.Initialize(&parent);
+	int							result = 1;
+	bool						message_loop = true;
+
+	result = ibrowser_client.Initialize(&parent);
+
+	// Qt 消息循环
+	/*
+	while(result)
+	{
+		result = ibrowser_client.Initialize(&parent);
+		CefDoMessageLoopWork();
+		if(message_loop)
+		{
+			message_loop = true;
+			result = app.exec();	
+		}
+	}
+	*/
 
 	result = app.exec();
 

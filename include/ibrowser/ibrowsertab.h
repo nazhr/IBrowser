@@ -23,10 +23,6 @@
 // Qt 
 #include <QtGui/QWidget>
 
-
-namespace ibrowser
-{
-
 // window and box size
 #define		MAX_LOADSTRING	100
 #define		MAX_URL_LENGTH  255
@@ -34,26 +30,24 @@ namespace ibrowser
 #define		TAB_BTN_WIDTH	124
 #define		TAB_BTN_HEIGTH	24
 
-	class	IBrowserTab
-	{
-	public :
-		IBrowserTab();
-		~IBrowserTab();
+class	IBrowserTab
+{
+public :
+	IBrowserTab();
+	~IBrowserTab();
 
-	public :
-		bool			CreateTab(QWidget *parent);
-		void			CreateBrowser(HWND tab_hWnd);
-		bool			BrowserLoadUrl(const std::wstring &url);
-		
+public :
+	bool			CreateTab(QWidget *parent);
+	void			CreateBrowser(HWND tab_hWnd);
+	bool			BrowserLoadUrl(const std::wstring &url);
+	
 
-	private : // non static member 
-		QWidget			*m_parent_window;
+private : // non static member 
+	QWidget			*m_parent_window;
 
-	private : // static member 
-		
+private : // static member 
+	
 
-	};
-
-}
+};
 
 #endif // R_IBROWSER_IBROWSERTAB_H

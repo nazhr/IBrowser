@@ -1,4 +1,4 @@
-﻿/****************************************************************************
+/****************************************************************************
  *   Copyright (C) 2014 by Jerry			                           		*
  *                                                                        	*
  *   This file is part of IBrowser.                                        	*
@@ -8,33 +8,24 @@
  *                                                                         	*
  *   IBrowser website: https://github.com/jerrykk/IBrowser                 	*
  ****************************************************************************/
-/*
- * ibrowser global function
- */
 
-#ifndef R_IBROWSER_GLOBAL_H
-#define R_IBROWSER_GLOBAL_H
+#ifndef R_IBROWSER_IBROWSERRENDERER_H
+#define R_IBROWSER_IBROWSERRENDERER_H
+
+// ibrowser
+#include "ibrowser/ibrowserapp.h"
 
 // cef
-#include <include/cef_app.h>
 #include <include/cef_base.h>
-#include <include/utils/resource.h>
-#include <include/cef_browser.h>
-#include <include/cef_command_line.h>
-#include <include/cef_frame.h>
-#include <include/cef_runnable.h>
 
-// Qt
-#include <QString>
+namespace ibrowserrenderer 
+{
+	// Message sent when the focused node changes.
+	extern const char kFocusedNodeChangedMessage[];
 
-/*
- * @brief : Returns the application working directory.
- */
-QString AppGetWorkingDirectory();
+	// Create the render delegate.
+	void CreateRenderDelegates(IBrowserApp::RenderDelegateSet& delegates);
 
-/*
- * @brief : Returns the application settings based on command line arguments.
- */
-void AppGetSettings(CefSettings& settings);
+}  // namespace client_renderer
 
-#endif // R_IBROWSER_GLOBAL_H
+#endif  // R_IBROWSER_IBROWSERRENDERER_H
