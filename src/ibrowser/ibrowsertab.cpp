@@ -10,6 +10,7 @@
  ****************************************************************************/
 
 // ibrowser
+#include "ibrowser/global.h"
 #include "ibrowser/ibrowsertab.h"
 #include "ibrowser/ibrowsersingle.h"
 #include "ibrowser/ibrowserhandler.h"
@@ -25,93 +26,101 @@
 #include <include/cef_base.h>
 #include <include/utils/resource.h>
 
-IBrowserTab::IBrowserTab()
-	:	m_parent_window(0)
+namespace ibrowser 
 {
-
-}
-IBrowserTab::~IBrowserTab(){}
-
-bool IBrowserTab::CreateTab(QWidget *parent)
-{
-	try
+	IBrowserTab::IBrowserTab()
+		:	m_parent_window(0)
 	{
-		// ibrowser and cef handler
-		CefRefPtr<IBrowserHandler> handler = new IBrowserHandler();
-		IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
-
-		m_parent_window = parent;
-		QSize		size = parent->size();
-
-		// create sub window
-		QWidget		sub_window(parent);
-		// sub window setting
-		sub_window.resize(size.width(), size.height());
-		// edit box setting
-		QLineEdit	editHWnd(&sub_window);
-		editHWnd.resize(size.width(), URLBAR_HEIGHT);
-		// hwnd window
-		HWND		tab_hWnd = sub_window.winId();
-		
-		sub_window.show();
-		CreateBrowser(tab_hWnd);
-
-		parent->show();
-		// cef message loop
-		CefRunMessageLoop();
 
 	}
-	catch(std::exception &e)
+	IBrowserTab::~IBrowserTab(){}
+
+	bool IBrowserTab::CreateTab(QWidget *parent)
 	{
-		QMessageBox qmess;
-		qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
-			"IBrowser IMainWindow System Error : "));
-		qmess.setText(QApplication::translate(e.what(), e.what()));
+		try
+		{
+			// ibrowser and cef handler
+			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
+			IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
+
+			m_parent_window = parent;
+			QSize		size = parent->size();
+
+			// create sub window
+			QWidget		sub_window(parent);
+			// sub window setting
+			sub_window.resize(size.width(), size.height());
+			// edit box setting
+			QLineEdit	editHWnd(&sub_window);
+			editHWnd.resize(size.width(), URLBAR_HEIGHT);
+			// hwnd window
+			HWND		tab_hWnd = sub_window.winId();
+			
+			sub_window.show();
+			CreateBrowser(tab_hWnd);
+
+			parent->show();
+			// cef message loop
+			CefRunMessageLoop();
+
+			CefShutdown();
+
+		}
+		catch(std::exception &e)
+		{
+			QMessageBox qmess;
+			qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
+				"IBrowser IMainWindow System Error : "));
+			qmess.setText(QApplication::translate(e.what(), e.what()));
+			qmess.show();
+		}
+		return 1;
 	}
-	return 1;
-}
 
-void	IBrowserTab::CreateBrowser(HWND tab_hWnd)
-{
-	try
+	void	IBrowserTab::CreateBrowser(HWND tab_hWnd)
 	{
-		// crate window
-		CefRefPtr<IBrowserHandler> handler = IBrowserSingle::Instance().getCurrentIBrowserHandler();
-		RECT		rect_tab;
-		::GetClientRect(tab_hWnd, &rect_tab);
+		try
+		{
+			// crate window
+			CefRefPtr<ibrowser::IBrowserHandler> handler = IBrowserSingle::
+				Instance().getCurrentIBrowserHandler();
+			RECT		rect_tab;
+			::GetClientRect(tab_hWnd, &rect_tab);
 
-		// set browser screen size 
-		// set browser top pos
-		rect_tab.top += URLBAR_HEIGHT;
+			// set browser screen size 
+			// set browser top pos
+			rect_tab.top += URLBAR_HEIGHT;
 
-		CefBrowserSettings browserSettings;
-		CefString(&browserSettings.default_encoding) = "utf-8";
-		browserSettings.file_access_from_file_urls = STATE_ENABLED;
-		browserSettings.universal_access_from_file_urls = STATE_ENABLED;
-		CefWindowInfo	info;
-		info.SetAsChild(tab_hWnd, rect_tab);
+			CefBrowserSettings browserSettings;
+			CefString(&browserSettings.default_encoding) = "utf-8";
+			browserSettings.file_access_from_file_urls = STATE_ENABLED;
+			browserSettings.universal_access_from_file_urls = STATE_ENABLED;
+			CefWindowInfo	info;
+			info.SetAsChild(tab_hWnd, rect_tab);
 
-		CefBrowserHost::CreateBrowser(info, handler.get(), handler->GetStartupURL(), browserSettings);
-		
+			CefBrowserHost::CreateBrowser(info, handler.get(), handler->GetStartupURL(), browserSettings);
+			
+		}
+		catch(std::exception &e)
+		{
+			QMessageBox qmess;
+			qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
+				"IBrowser IMainWindow System Error : "));
+			qmess.setText(QApplication::translate(e.what(), e.what()));
+			qmess.show();
+		}
 	}
-	catch(std::exception &e)
-	{
-		QMessageBox qmess;
-		qmess.setWindowTitle(QApplication::translate("IBrowser Tab System Error : ", 
-			"IBrowser IMainWindow System Error : "));
-		qmess.setText(QApplication::translate(e.what(), e.what()));
-	}
-}
 
-bool IBrowserTab::BrowserLoadUrl(const std::wstring &url)
-{
-	IBrowserHandler				*handler = IBrowserSingle::
-								Instance().getCurrentIBrowserHandler();
-	if(!url.empty() && handler)
+	bool IBrowserTab::BrowserLoadUrl(const std::wstring &url)
 	{
-		CefRefPtr<CefBrowser>	browser = handler->GetBrowser();
-		browser->GetMainFrame()->LoadURL(url);
-		return true;
-	}	
-	return false;
+		IBrowserHandler				*handler = IBrowserSingle::
+									Instance().getCurrentIBrowserHandler();
+		if(!url.empty() && handler)
+		{
+			CefRefPtr<CefBrowser>	browser = handler->GetBrowser();
+			browser->GetMainFrame()->LoadURL(url);
+			return true;
+		}	
+		return false;
+	}
 }

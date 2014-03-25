@@ -13,12 +13,16 @@
 #define R_IBROWSER_IMAINWINDOW_H
 
 // ibrowser
+#include "ibrowser/global.h"
 #include "ibrowser/ui_ibrowser.h"
 #include "ibrowser/ibrowserapp.h"
 #include "ibrowser/ibrowserhandler.h"
 
 // Qt
 #include <QtGui/QMainWindow>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QMessageBox>
+#include <QtGui/QResizeEvent>
 
 // Boost
 #include <boost/thread/once.hpp>
@@ -36,6 +40,10 @@ class IMainwindow : public QMainWindow
 public:
 	IMainwindow(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~IMainwindow();
+
+public : // inherit function
+	void closeEvent(QCloseEvent *event);
+	void resizeEvent(QResizeEvent *event);
 
 public : // non staic function member
 
@@ -56,7 +64,8 @@ private :// static member
 	static	boost::once_flag					m_once_flag;
 
 private: // qt
-	Ui::imainwindowClass ui;
+	Ui::imainwindowClass						m_ui;
+	QMessageBox									m_qmess;
 };
 
 #endif // R_IBROWSER_IMAINWINDOW_H

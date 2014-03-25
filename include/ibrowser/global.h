@@ -8,6 +8,7 @@
  *                                                                         	*
  *   IBrowser website: https://github.com/jerrykk/IBrowser                 	*
  ****************************************************************************/
+
 /*
  * ibrowser global function
  */
@@ -26,6 +27,22 @@
 
 // Qt
 #include <QString>
+#include <QApplication>
+
+
+// boost
+#include <boost/scoped_ptr.hpp>
+
+// window info
+// window and box size
+#define		MAX_LOADSTRING	100
+#define		MAX_URL_LENGTH  255
+#define		URLBAR_HEIGHT	24
+#define		TAB_BTN_WIDTH	124
+#define		TAB_BTN_HEIGTH	24
+
+// QApplication global
+static	QApplication *g_qApplication = NULL;
 
 /*
  * @brief : Returns the application working directory.

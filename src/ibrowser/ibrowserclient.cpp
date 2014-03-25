@@ -20,52 +20,56 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 
-// static member init
-HINSTANCE				IBrowserClient::m_hInstance = NULL;
-CefRefPtr<IBrowserApp>	IBrowserClient::m_cef_app(0);
-
-IBrowserClient::IBrowserClient()
+namespace ibrowser 
 {
+	// static member init
+	HINSTANCE				IBrowserClient::m_hInstance = NULL;
+	CefRefPtr<IBrowserApp>	IBrowserClient::m_cef_app(0);
 
-}
-
-IBrowserClient::~IBrowserClient(){}
-
-
-int IBrowserClient::Initialize(QWidget *parent)
-{
-	try
+	IBrowserClient::IBrowserClient()
 	{
-		HINSTANCE				hInstance = (HINSTANCE)GetModuleHandle(NULL);
-		
-		// cef
-		CefMainArgs				main_args(hInstance);
-		CefRefPtr<IBrowserApp>	m_cef_app = new IBrowserApp;
-		int						exit_code = CefExecuteProcess(main_args, m_cef_app.get());
-		if (exit_code >= 0) 
+
+	}
+
+	IBrowserClient::~IBrowserClient(){}
+
+
+	int IBrowserClient::Initialize(QWidget *parent)
+	{
+		try
 		{
-			return 0;
+			HINSTANCE				hInstance = (HINSTANCE)GetModuleHandle(NULL);
+			
+			// cef
+			CefMainArgs				main_args(hInstance);
+			CefRefPtr<IBrowserApp>	m_cef_app = new IBrowserApp;
+			int						exit_code = CefExecuteProcess(main_args, m_cef_app.get());
+			if (exit_code >= 0) 
+			{
+				return 0;
+			}
+			CefSettings				settings;
+
+			AppGetSettings(settings);
+
+			// create sub process
+			CefString(&settings.browser_subprocess_path).FromASCII("subprocess.exe");
+
+			// cef init
+			CefInitialize(main_args, settings, m_cef_app.get());
+
+			IBrowserTab				tab;
+			tab.CreateTab(parent);
+			
 		}
-		CefSettings				settings;
-
-		AppGetSettings(settings);
-
-		// create sub process
-		CefString(&settings.browser_subprocess_path).FromASCII("subprocess.exe");
-
-		// cef init
-		CefInitialize(main_args, settings, m_cef_app.get());
-
-		IBrowserTab				tab;
-		tab.CreateTab(parent);
-		
+		catch(std::exception &e)
+		{
+			QMessageBox qmess;
+			qmess.setWindowTitle(QApplication::translate("IBrowser IMainWindow System Error : ", 
+				"IBrowser IMainWindow System Error : "));
+			qmess.setText(QApplication::translate(e.what(), e.what()));
+			qmess.show();
+		}
+		return 1;
 	}
-	catch(std::exception &e)
-	{
-		QMessageBox qmess;
-		qmess.setWindowTitle(QApplication::translate("IBrowser IMainWindow System Error : ", 
-			"IBrowser IMainWindow System Error : "));
-		qmess.setText(QApplication::translate(e.what(), e.what()));
-	}
-	return 1;
 }

@@ -10,6 +10,7 @@
  ****************************************************************************/
 
 // ibrowser
+#include "ibrowser/global.h"
 #include "ibrowser/imainwindow.h"
 #include "ibrowser/ibrowserclient.h"
 
@@ -22,8 +23,8 @@
 
 int main(int argc, char **argv)
 {
-	QApplication				app(argc, argv);
-	IBrowserClient				ibrowser_client;
+	g_qApplication = new QApplication(argc, argv);
+	ibrowser::IBrowserClient	ibrowser_client;
 	IMainwindow					parent;
 	int							result = 1;
 	bool						message_loop = true;
@@ -44,9 +45,9 @@ int main(int argc, char **argv)
 	}
 	*/
 
-	result = app.exec();
+	// result = app.exec();
 
-	ibrowser_client.Quit();
+	// ibrowser_client.Quit();
 
 	return result;
 }

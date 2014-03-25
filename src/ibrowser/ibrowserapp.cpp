@@ -142,6 +142,7 @@ void IBrowserApp::OnContextInitialized()
 	qmess.setWindowTitle(QApplication::translate("IBrowser IMainWindow System Error : ", 
 		"IBrowser IMainWindow System Error : "));
 	qmess.setText(QApplication::translate("tst", "test"));
+	qmess.show();
 }
 
 // 

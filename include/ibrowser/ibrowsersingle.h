@@ -59,12 +59,12 @@ public :
 		return m_ibrowser_client.get();	
 	}*/
 
-	IBrowserHandler* getCurrentIBrowserHandler()
+	ibrowser::IBrowserHandler* getCurrentIBrowserHandler()
 	{
 		return m_ibrowser_handler.get();	
 	}
 
-	void setCurrentIBrowserHandler(IBrowserHandler *handler)
+	void setCurrentIBrowserHandler(ibrowser::IBrowserHandler *handler)
 	{
 		// m_ibrowser_handler->Release();
 		m_ibrowser_handler = handler;
@@ -76,7 +76,7 @@ public :
 private : 
 	CefRefPtr<IBrowserApp>						m_ibrowser_app;
 	// CefRefPtr<IBrowserClient>				m_ibrowser_client;
-	CefRefPtr<IBrowserHandler>					m_ibrowser_handler;
+	CefRefPtr<ibrowser::IBrowserHandler>		m_ibrowser_handler;
 
 private :
 	static boost::scoped_ptr<IBrowserSingle>	m_ibrowser_sinlge;
