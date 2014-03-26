@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  *   Copyright (C) 2014 by Jerry			                           		*
  *                                                                        	*
  *   This file is part of IBrowser.                                        	*
@@ -63,6 +63,9 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 				// this->close();
 			}
 		}
+
+		// 启动过滤器
+		// this->installEventFilter(this);
 	}
 	catch(std::exception &e)
 	{
@@ -105,5 +108,17 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 		m_qmess.show();
 	}
 }
+
+// 过滤器设计
+/*
+bool IMainwindow::eventFilter(QObject * target, QEvent *event)
+{
+	if(event->type() == QEvent::Resize)
+	{
+
+	}
+	return QMainWindow::eventFilter(target,event);
+}
+*/
 
 

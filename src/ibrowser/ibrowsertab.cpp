@@ -28,14 +28,15 @@
 
 namespace ibrowser 
 {
-	IBrowserTab::IBrowserTab()
-		:	m_parent_window(0)
+	IBrowserTab::IBrowserTab(QWidget *parent)
+		:	m_parent_widget(parent), 
+			m_sub_widget(0)
 	{
 
 	}
 	IBrowserTab::~IBrowserTab(){}
 
-	bool IBrowserTab::CreateTab(QWidget *parent)
+	bool IBrowserTab::CreateTab()
 	{
 		try
 		{
@@ -43,27 +44,24 @@ namespace ibrowser
 			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
 			IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
 
-			m_parent_window = parent;
-			QSize		size = parent->size();
+			QSize		size = m_parent_widget->size();
 
 			// create sub window
-			QWidget		sub_window(parent);
+			m_sub_widget = new QWidget(m_parent_widget);
 			// sub window setting
-			sub_window.resize(size.width(), size.height());
+			m_sub_widget->resize(size.width(), size.height());
 			// edit box setting
-			QLineEdit	editHWnd(&sub_window);
-			editHWnd.resize(size.width(), URLBAR_HEIGHT);
+			m_edit_box = new QLineEdit(m_sub_widget);
+			m_edit_box->resize(size.width(), URLBAR_HEIGHT);
 			// hwnd window
-			HWND		tab_hWnd = sub_window.winId();
+			HWND		tab_hWnd = m_sub_widget->winId();
 			
-			sub_window.show();
 			CreateBrowser(tab_hWnd);
 
-			parent->show();
-			// cef message loop
-			CefRunMessageLoop();
-
-			CefShutdown();
+			m_layout = new QHBoxLayout(m_parent_widget);
+			m_layout->addWidget(m_sub_widget);
+			m_parent_widget->setLayout(m_layout);
+			m_parent_widget->show();
 
 		}
 		catch(std::exception &e)

@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
  *   Copyright (C) 2014 by Jerry			                           		*
  *                                                                        	*
  *   This file is part of IBrowser.                                        	*
@@ -42,8 +42,9 @@ public:
 	~IMainwindow();
 
 public : // inherit function
-	void closeEvent(QCloseEvent *event);
-	void resizeEvent(QResizeEvent *event);
+	virtual void closeEvent(QCloseEvent *event);
+	virtual void resizeEvent(QResizeEvent *event);
+	// virtual bool eventFilter(QObject *, QEvent *);
 
 public : // non staic function member
 

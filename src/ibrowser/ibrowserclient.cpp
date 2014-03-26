@@ -58,8 +58,13 @@ namespace ibrowser
 			// cef init
 			CefInitialize(main_args, settings, m_cef_app.get());
 
-			IBrowserTab				tab;
-			tab.CreateTab(parent);
+			m_ibrowser_tab = new IBrowserTab(parent);
+			m_ibrowser_tab->CreateTab();
+
+			// cef message loop
+			CefRunMessageLoop();
+
+			CefShutdown();
 			
 		}
 		catch(std::exception &e)

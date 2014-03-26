@@ -22,23 +22,29 @@
 
 // Qt 
 #include <QtGui/QWidget>
+#include <QtGui/QLineEdit>
+#include <QtGui/QHBoxLayout>
 
 namespace ibrowser
 {
 	class	IBrowserTab
 	{
 	public :
-		IBrowserTab();
+		IBrowserTab(QWidget *parent);
 		~IBrowserTab();
 
 	public :
-		bool			CreateTab(QWidget *parent);
+		bool			CreateTab();
 		void			CreateBrowser(HWND tab_hWnd);
 		bool			BrowserLoadUrl(const std::wstring &url);
 		
 
 	private : // non static member 
-		QWidget			*m_parent_window;
+		QWidget			*m_parent_widget;
+		QWidget			*m_sub_widget;
+		QLineEdit		*m_edit_box;
+		QHBoxLayout		*m_layout;
+
 
 	private : // static member 
 		
