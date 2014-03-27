@@ -11,13 +11,12 @@
 
 #include "ibrowser/ibwidget.h"
 
-// Qt
-#include <QtGui>
-
 IBWidget::IBWidget(QWidget *parent)
 	:	QWidget(parent)  
-{  
-
+{
+	QSize size = this->size();
+	m_edit = new QLineEdit(this);
+	m_edit->resize(size.width(), URLBAR_HEIGHT);
 }  
 
 IBWidget::~IBWidget()  

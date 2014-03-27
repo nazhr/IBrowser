@@ -12,8 +12,12 @@
 #ifndef R_IBROWSER_IBWIDGET_H  
 #define R_IBROWSER_IBWIDGET_H
 
+#include "ibrowser/global.h"
+
 // Qt
-#include <QtGui/QWidget>  
+#include <QtGui>
+#include <QtGui/QWidget>
+#include <QtGui/QLineEdit>
 
 class IBWidget : public QWidget  
 {  
@@ -21,6 +25,10 @@ class IBWidget : public QWidget
 public:  
 	IBWidget(QWidget* = 0);
 	~IBWidget();  
+
+private :
+	QHBoxLayout		*m_layout;
+	QLineEdit		*m_edit;
 protected:  
 	bool event(QEvent *);  
 signals:  
