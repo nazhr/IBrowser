@@ -17,6 +17,7 @@
 #include "ibrowser/ui_ibrowser.h"
 #include "ibrowser/ibrowserapp.h"
 #include "ibrowser/ibrowserhandler.h"
+#include "ibrowser/ibrowsertabwidget.h"
 
 // Qt
 #include <QtGui/QMainWindow>
@@ -46,6 +47,12 @@ public : // inherit function
 	virtual void resizeEvent(QResizeEvent *event);
 	// virtual bool eventFilter(QObject *, QEvent *);
 
+public : // non static inline function
+	ibrowser::IBrowserTabWidget *tabWidget()
+	{
+		return m_tabWidget;
+	}
+
 public : // non staic function member
 
 public : // staic function member
@@ -61,12 +68,15 @@ public : // staic function member
 	}
 
 private :// static member
-	static	boost::scoped_ptr<IMainwindow>		m_instance_prt;
-	static	boost::once_flag					m_once_flag;
+	static	boost::scoped_ptr<IMainwindow>	m_instance_prt;
+	static	boost::once_flag				m_once_flag;
 
 private: // qt
-	Ui::imainwindowClass						m_ui;
-	QMessageBox									m_qmess;
+	Ui::imainwindowClass					m_ui;
+	QMessageBox								m_qmess;
+	IBWidget								*m_ibwidget;
+	ibrowser::IBrowserTabWidget				*m_tabWidget;
+
 };
 
 #endif // R_IBROWSER_IMAINWINDOW_H

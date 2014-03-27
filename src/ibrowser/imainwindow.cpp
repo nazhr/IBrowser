@@ -11,10 +11,11 @@
 
 // ibrowser
 #include "ibrowser/global.h"
-#include "imainwindow.h"
+#include "ibrowser/imainwindow.h"
 #include "ibrowser/ibrowsersingle.h"
 
 // Qt
+#include <QtGui>
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 
@@ -28,14 +29,33 @@ boost::once_flag					IMainwindow::m_once_flag = BOOST_ONCE_INIT;
 
 IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 	:	QMainWindow(parent, flags), 
-		m_qmess(parent)
+		m_qmess(parent),
+		m_tabWidget(0)
 {
+	m_tabWidget = new ibrowser::IBrowserTabWidget(this);
 	QString		tittle = "IBrowser IMainWindow System Error : ";
 	m_qmess.setWindowTitle(tittle);
 
-	m_ui.setupUi(this);
-	this->resize(880, 600);
-	this->setWindowTitle(QApplication::translate("IBrowser", "IBrowser"));
+	// init tab page
+	m_tabWidget->setMovable(true);  
+	m_tabWidget->setTabsClosable(true);  
+	m_tabWidget->setTabShape(QTabWidget::Triangular);
+	
+	// set main window's sub window tab page(tabwidget)
+	setCentralWidget(m_tabWidget);  
+
+	// set event link
+	connect(m_tabWidget->m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), m_tabWidget, SLOT(slot_tabDrag(int, QPoint)));  
+	connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), m_tabWidget, SLOT(Slot_closeTab(int)));  
+	connect(m_tabWidget, SIGNAL(currentChanged(int)), m_tabWidget, SLOT(setCurrentIndex(int)));
+
+
+	// m_ui.setupUi(this);
+	resize(880, 600);
+	setWindowTitle(QApplication::translate("IBrowser", "IBrowser"));
+
+	// 启动过滤器
+	// this->installEventFilter(this);
 }
 
 IMainwindow::~IMainwindow()
@@ -63,9 +83,6 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 				// this->close();
 			}
 		}
-
-		// 启动过滤器
-		// this->installEventFilter(this);
 	}
 	catch(std::exception &e)
 	{
@@ -120,5 +137,4 @@ bool IMainwindow::eventFilter(QObject * target, QEvent *event)
 	return QMainWindow::eventFilter(target,event);
 }
 */
-
 

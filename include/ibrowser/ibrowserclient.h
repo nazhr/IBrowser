@@ -14,7 +14,9 @@
 
 // ibrowser
 #include "ibrowser/ibrowserapp.h"
-#include "ibrowser/ibrowsertab.h"
+#include "ibrowser/ibrowsertabwidget.h"
+#include "ibrowser/imainwindow.h"
+#include "ibrowser/ibwidget.h"
 
 // cef
 #include <include/cef_base.h>
@@ -37,7 +39,9 @@ namespace ibrowser
 		virtual ~IBrowserClient();
 
 	public : // non staic function member
-		int		Initialize(QWidget *parent);
+		int		Initialize(IMainwindow *parent);
+		void	CreateBrowser(HWND &hWnd);
+		bool	BrowserLoadUrl(const std::wstring &url);
 		void	Quit()
 		{
 			// cef close borwser
@@ -49,7 +53,9 @@ namespace ibrowser
 		static	CefRefPtr</*ibrowser::*/IBrowserApp>	m_cef_app;
 
 	private :
-		IBrowserTab										*m_ibrowser_tab;
+		IMainwindow										*m_parent;
+		IBrowserTabWidget								*m_tabWidget;
+		IBWidget										*m_subWidget;
 		
 	};
 }

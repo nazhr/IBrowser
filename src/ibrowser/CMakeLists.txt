@@ -21,14 +21,24 @@ set(IBR_SRCS
 	ibrowserhandler.cpp
 	ibrowserclient.cpp
 	ibrowsersingle.cpp
-	ibrowsertab.cpp
 	global.cpp
 	imainwindow.cpp
 	ibrowserrenderer.cpp
+	ibrowsertabwidget.cpp
+	ibtabbar.cpp
+	ibwidget.cpp
    )
 
-SET(IBROWSER_SOURCES 	imainwindow.cpp) 
-SET(IBROWSER_HEADERS 	imainwindow.h) 
+SET(IBROWSER_SOURCES 	imainwindow.cpp
+						ibrowsertabwidget.cpp
+						ibtabbar.cpp
+						ibwidget.cpp) 
+						
+SET(IBROWSER_HEADERS 	${IBROWSER_SOURCE_DIR}/include/ibrowser/imainwindow.h
+						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibrowsertabwidget.h
+						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibtabbar.h 
+						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibwidget.h) 
+						
 SET(IBROWSER_FORMS 		ibrowser.ui) 
 SET(IBROWSER_RESOURCES 	ibrowser.qrc) 
 

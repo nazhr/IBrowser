@@ -20,10 +20,14 @@
 // Qt
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
+#include <QtGui/QCleanlooksStyle> 
 
 int main(int argc, char **argv)
 {
 	g_qApplication = new QApplication(argc, argv);
+	QApplication::setStyle(new QCleanlooksStyle);  
+	QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
+
 	ibrowser::IBrowserClient	ibrowser_client;
 	IMainwindow					parent;
 	int							result = 1;
@@ -45,7 +49,7 @@ int main(int argc, char **argv)
 	}
 	*/
 
-	// result = app.exec();
+	// result = g_qApplication->exec();
 
 	// ibrowser_client.Quit();
 
