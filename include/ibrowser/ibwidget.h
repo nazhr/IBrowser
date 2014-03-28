@@ -14,7 +14,7 @@
 
 // ibrowser
 #include "ibrowser/global.h"
-#include "ibrowser/ibrowserhandler.h"
+#include "ibrowser/ibrowsersingle.h"
 
 // Qt
 #include <QtGui>
@@ -29,7 +29,21 @@ class IBWidget : public QWidget
 	Q_OBJECT  
 public:  
 	IBWidget(QWidget* = 0);
-	~IBWidget();  
+	~IBWidget(); 
+
+public :
+	int GetBrowserId()
+	{
+		return m_browserId;
+	}
+
+	void SetBrowserId(int browserId)
+	{
+		m_browserId = browserId;
+	}
+
+private :
+	void Init();
 
 private slots :
 	void LETextChanged(const QString &text);
@@ -37,6 +51,7 @@ private slots :
 
 private :
 	boost::scoped_ptr<QLineEdit>	m_edit;
+	int								m_browserId;
 
 protected:  
 	bool event(QEvent *);  

@@ -66,7 +66,9 @@ namespace ibrowser
 
 		// Add to the list of existing browsers.
 		browser_list_.push_back(browser);
-
+		
+		// set current browser
+		SetMainBrowser(browser);
 		
 	}
 

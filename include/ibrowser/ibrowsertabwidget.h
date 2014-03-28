@@ -27,6 +27,8 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QTabWidget>
+#include <QtCore/QList>
+#include <QtCore/QSharedPointer>
 
 namespace ibrowser
 {
@@ -58,6 +60,8 @@ namespace ibrowser
 		QWidget										*m_parent;
 		QMessageBox									m_qmess;
 		boost::scoped_ptr<ibrowser::IBrowserClient>	m_client;
+		typedef QList<QSharedPointer<IBWidget> >	m_widgetList;
+		m_widgetList								m_widgetList_;
 
 	private : // static member 
 		

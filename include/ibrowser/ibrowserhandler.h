@@ -86,7 +86,7 @@ namespace ibrowser
 							CefWindowHandle stopHwnd);
 		inline CefRefPtr<CefBrowser>				GetBrowser();
 		inline CefRefPtr<IBrowserHandler>			GetCefPtrHandler();
-		inline void									SetMainHwnd(CefWindowHandle hwnd);
+		inline void									SetMainBrowser(CefBrowser *browser);
 		// Returns the startup URL.
 		inline std::string							GetStartupURL();
 		inline bool									IsClosing();
@@ -141,10 +141,17 @@ namespace ibrowser
 		return m_startupURL;
 	}
 
-	inline void IBrowserHandler::SetMainHwnd(CefWindowHandle hwnd) 
+	inline void IBrowserHandler::SetMainBrowser(CefBrowser *browser) 
 	{
-		AutoLock lock_scope(this);
-		m_mainhwnd = hwnd;
+		// set current browser
+		if(browser && !browser->IsSame(m_browser))
+		{
+			m_browser = browser;
+			m_browserId = browser->GetIdentifier();
+			// set focus enable
+			browser->GetHost()->SetFocus(true);
+			browser->GetHost()->SendFocusEvent(true);
+		}
 	}
 
 	inline bool IBrowserHandler::IsClosing()
