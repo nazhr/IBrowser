@@ -12,9 +12,8 @@
 #ifndef R_IBROWSER_IBROWSERTABWIDGET_H
 #define R_IBROWSER_IBROWSERTABWIDGET_H
 
-// ibrowser utils
-#include "utils/messagebox.h"
-// #include "ibrowser/imainwindow.h"
+// ibrowser
+#include "ibrowser/ibrowserclient.h"
 #include "ibrowser/ibtabbar.h"
 #include "ibrowser/ibwidget.h"
 
@@ -38,6 +37,9 @@ namespace ibrowser
 		IBrowserTabWidget(QWidget *parent = 0);
 		virtual ~IBrowserTabWidget();
 
+	public :
+		void CreateBrowserTab();
+
 	public : // inherit QTabWidget
 
 	public :
@@ -52,7 +54,10 @@ namespace ibrowser
 		virtual void Slot_closeTab(int);
 
 	private : // non static member 
-		QWidget			*m_parent;
+		QWidget										*m_parent;
+		QMessageBox									m_qmess;
+
+		boost::scoped_ptr<ibrowser::IBrowserClient>	m_client;
 
 	private : // static member 
 		

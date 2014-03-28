@@ -136,10 +136,8 @@ namespace ibrowser
 		if (browser_list_.empty()) 
 		{
 			// All browser windows have closed. Quit the application message loop.
-			// CefQuitMessageLoop();
-			//CefShutdown();
 			this->m_bIsClosing = true;
-			g_qApplication->exit();
+			CefQuitMessageLoop();
 		}
 	}
 

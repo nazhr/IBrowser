@@ -10,10 +10,7 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/global.h"
 #include "ibrowser/ibrowsertabwidget.h"
-#include "ibrowser/ibrowsersingle.h"
-#include "ibrowser/ibrowserhandler.h"
 
 // Qt
 #include <QtGui/QWidget>
@@ -29,13 +26,40 @@
 namespace ibrowser 
 {
 	IBrowserTabWidget::IBrowserTabWidget(QWidget *parent)
-		:	QTabWidget(parent)
+		:	QTabWidget(parent),
+			m_qmess(parent)
 	{
+		// message box 
+		QString		tittle = "IBrowser IMainWindow System Error : ";
+		m_qmess.setWindowTitle(tittle);
+
+		m_client.reset(new ibrowser::IBrowserClient());
+		// init
 		m_parent = parent;
 		m_ibtabbar = new IBTabBar();  
 		setTabBar(m_ibtabbar);   
 	}
 	IBrowserTabWidget::~IBrowserTabWidget(){}
+
+	void IBrowserTabWidget::CreateBrowserTab()
+	{
+		try
+		{
+			IBWidget *m_subWidget = new IBWidget();
+			this->addTab(m_subWidget, "page");
+			HWND browserHWnd = m_subWidget->winId();
+			std::string default_url = "www.google.com.hk";
+			
+			m_parent->show();
+			m_client->Initialize(browserHWnd, default_url);
+
+		}
+		catch(std::exception &e)
+		{
+			m_qmess.setText(e.what());
+			m_qmess.show();
+		}
+	}
 
 	// Qt Slots
 	/*
@@ -90,7 +114,9 @@ namespace ibrowser
 		int counts = count();
 		if(!counts)
 		{
-			m_parent->close();
+			// m_parent->close();
+			// this->close();
+			exit(0);
 		}
 
 	}

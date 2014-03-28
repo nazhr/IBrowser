@@ -10,10 +10,7 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/global.h"
 #include "ibrowser/ibrowserclient.h"
-#include "ibrowser/ibrowsertabwidget.h"
-#include "ibrowser/ibrowsersingle.h"
 
 // Qt
 #include <QtGui/QWidget>
@@ -35,11 +32,10 @@ namespace ibrowser
 	IBrowserClient::~IBrowserClient(){}
 
 
-	int IBrowserClient::Initialize(IMainwindow *parent)
+	int IBrowserClient::Initialize(HWND &hWnd, std::string &url)
 	{
 		try
 		{
-			m_parent = parent;
 			HINSTANCE				hInstance = (HINSTANCE)GetModuleHandle(NULL);
 			
 			// cef
@@ -59,14 +55,13 @@ namespace ibrowser
 
 			// cef init
 			CefInitialize(main_args, settings, m_cef_app.get());
-			
-			m_tabWidget = parent->tabWidget();
-			m_subWidget = new IBWidget();
-			m_tabWidget->addTab(m_subWidget, "page 1");
-			HWND browserHWnd = m_subWidget->winId();
-			CreateBrowser(browserHWnd);
-			
-			parent->show();
+
+			// init ibrowser handler
+			// ibrowser and cef handler
+			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
+			IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
+			// create borwser
+			CreateBrowser(hWnd, url);
 			
 			// cef message loop
 			CefRunMessageLoop();
@@ -85,17 +80,16 @@ namespace ibrowser
 		return 1;
 	}
 
-	void IBrowserClient::CreateBrowser(HWND &tab_hWnd)
+	void IBrowserClient::CreateBrowser(HWND &tab_hWnd, std::string &url)
 	{
 		try
 		{
 			// ibrowser and cef handler
-			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
-			IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
+			CefRefPtr<ibrowser::IBrowserHandler> handler = IBrowserSingle::Instance().getCurrentIBrowserHandler();
 
 			RECT		rect_tab;
-			HWND		parent_hWnd = m_parent->winId();
-			::GetClientRect(parent_hWnd, &rect_tab);
+			// HWND		parent_hWnd = m_parent->winId();
+			::GetClientRect(tab_hWnd, &rect_tab);
 
 			// set browser screen size 
 			// set browser top pos
@@ -108,7 +102,7 @@ namespace ibrowser
 			CefWindowInfo	info;
 			info.SetAsChild(tab_hWnd, rect_tab);
 
-			CefBrowserHost::CreateBrowser(info, handler.get(), handler->GetStartupURL(), browserSettings);
+			CefBrowserHost::CreateBrowser(info, handler.get(), url, browserSettings);
 
 		}
 		catch(std::exception &e)
@@ -118,6 +112,20 @@ namespace ibrowser
 				"IBrowser IMainWindow System Error : "));
 			qmess.setText(QApplication::translate(e.what(), e.what()));
 			qmess.show();
+		}
+	}
+
+	void IBrowserClient::CloseBrowser()
+	{
+		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
+			::Instance().getCurrentIBrowserHandler();
+		if(handler.get())
+		{
+			CefRefPtr<CefBrowser>				browser = handler->GetBrowser();
+			if(browser.get())
+			{
+				browser->GetHost()->CloseBrowser(false);
+			}
 		}
 	}
 

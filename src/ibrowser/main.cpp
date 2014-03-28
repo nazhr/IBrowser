@@ -28,30 +28,10 @@ int main(int argc, char **argv)
 	QApplication::setStyle(new QCleanlooksStyle);  
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
 
-	ibrowser::IBrowserClient	ibrowser_client;
 	IMainwindow					parent;
-	int							result = 1;
-	bool						message_loop = true;
-
-	result = ibrowser_client.Initialize(&parent);
-
-	// Qt 消息循环
-	/*
-	while(result)
-	{
-		result = ibrowser_client.Initialize(&parent);
-		CefDoMessageLoopWork();
-		if(message_loop)
-		{
-			message_loop = true;
-			result = app.exec();	
-		}
-	}
-	*/
+	parent.Initialize();
 
 	// result = g_qApplication->exec();
 
-	// ibrowser_client.Quit();
-
-	return result;
+	return 1;
 }

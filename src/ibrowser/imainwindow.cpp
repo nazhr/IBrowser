@@ -32,7 +32,7 @@ IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 		m_qmess(parent),
 		m_tabWidget(0)
 {
-	m_tabWidget = new ibrowser::IBrowserTabWidget(this);
+	m_tabWidget.reset(new ibrowser::IBrowserTabWidget(this));
 	QString		tittle = "IBrowser IMainWindow System Error : ";
 	m_qmess.setWindowTitle(tittle);
 
@@ -42,12 +42,12 @@ IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 	m_tabWidget->setTabShape(QTabWidget::Triangular);
 	
 	// set main window's sub window tab page(tabwidget)
-	setCentralWidget(m_tabWidget);  
+	setCentralWidget(m_tabWidget.get());  
 
 	// set event link
-	connect(m_tabWidget->m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), m_tabWidget, SLOT(slot_tabDrag(int, QPoint)));  
-	connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), m_tabWidget, SLOT(Slot_closeTab(int)));  
-	connect(m_tabWidget, SIGNAL(currentChanged(int)), m_tabWidget, SLOT(setCurrentIndex(int)));
+	connect(m_tabWidget->m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), m_tabWidget.get(), SLOT(slot_tabDrag(int, QPoint)));  
+	connect(m_tabWidget.get(), SIGNAL(tabCloseRequested(int)), m_tabWidget.get(), SLOT(Slot_closeTab(int)));  
+	connect(m_tabWidget.get(), SIGNAL(currentChanged(int)), m_tabWidget.get(), SLOT(setCurrentIndex(int)));
 
 
 	// m_ui.setupUi(this);
@@ -61,6 +61,21 @@ IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 IMainwindow::~IMainwindow()
 {
 
+}
+
+// public method
+void IMainwindow::Initialize()
+{
+	try
+	{
+		m_tabWidget->CreateBrowserTab();
+
+	}
+	catch(std::exception &e)
+	{
+		m_qmess.setText(e.what());
+		m_qmess.show();
+	}
 }
 
 // inherit method
@@ -81,6 +96,7 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 				browser->GetHost()->CloseBrowser(false);
 				CefQuitMessageLoop();
 				// this->close();
+				exit(0);
 			}
 		}
 	}

@@ -13,10 +13,10 @@
 #define R_BROWSER_IBROWSERCLIENT_H
 
 // ibrowser
+#include "ibrowser/global.h"
+#include "ibrowser/ibrowsersingle.h"
+#include "ibrowser/ibrowserhandler.h"
 #include "ibrowser/ibrowserapp.h"
-#include "ibrowser/ibrowsertabwidget.h"
-#include "ibrowser/imainwindow.h"
-#include "ibrowser/ibwidget.h"
 
 // cef
 #include <include/cef_base.h>
@@ -30,6 +30,9 @@
 #include <QtGui/QWidget>
 #include <QtGui/QMessageBox>
 
+// vc
+#include <string>
+
 namespace ibrowser 
 {
 	class IBrowserClient
@@ -39,9 +42,10 @@ namespace ibrowser
 		virtual ~IBrowserClient();
 
 	public : // non staic function member
-		int		Initialize(IMainwindow *parent);
-		void	CreateBrowser(HWND &hWnd);
+		int		Initialize(HWND &hWnd, std::string &url);
+		void	CreateBrowser(HWND &hWnd, std::string &url);
 		bool	BrowserLoadUrl(const std::wstring &url);
+		void	CloseBrowser();
 		void	Quit()
 		{
 			// cef close borwser
@@ -49,13 +53,11 @@ namespace ibrowser
 		}
 
 	private : // static member
-		static	HINSTANCE								m_hInstance;
-		static	CefRefPtr</*ibrowser::*/IBrowserApp>	m_cef_app;
+		static	HINSTANCE									m_hInstance;
+		static	CefRefPtr</*ibrowser::*/IBrowserApp>		m_cef_app;
+		// static	boost::scoped_ptr<ibrowser::IBrowserClient>
 
 	private :
-		IMainwindow										*m_parent;
-		IBrowserTabWidget								*m_tabWidget;
-		IBWidget										*m_subWidget;
 		
 	};
 }
