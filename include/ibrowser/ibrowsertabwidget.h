@@ -45,18 +45,18 @@ namespace ibrowser
 	public :
 		IBTabBar		*m_ibtabbar;
 
-	signals : // Qt signals
-		void tabCloseRequested(int index);
+	signals : // default signals
+		void SenderCurrentIndex(int);
 
 	private slots : // Qt slots event
 		// virtual void Slot_tabBarDoubleClicked();           
 		// virtual void Slot_tabDrag(int index, QPoint point); 
 		virtual void Slot_closeTab(int);
+		virtual void AddTabPage();
 
 	private : // non static member 
 		QWidget										*m_parent;
 		QMessageBox									m_qmess;
-
 		boost::scoped_ptr<ibrowser::IBrowserClient>	m_client;
 
 	private : // static member 

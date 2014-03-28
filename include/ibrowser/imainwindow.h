@@ -54,20 +54,8 @@ public : // non static inline function
 public : // non staic function member
 
 public : // staic function member
-	static	void Init()
-	{
-		m_instance_prt.reset(new IMainwindow());
-	}
-
-	static	IMainwindow &GetCurrenMainWindow()
-	{
-		boost::call_once(IMainwindow::Init, m_once_flag);
-		return *m_instance_prt;
-	}
 
 private :// static member
-	static	boost::scoped_ptr<IMainwindow>			m_instance_prt;
-	static	boost::once_flag						m_once_flag;
 
 private: // qt
 	Ui::imainwindowClass							m_ui;

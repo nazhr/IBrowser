@@ -13,9 +13,9 @@
 #define R_IBROWSER_IBROWSERHANDLER_H
 
 //boost
-#include "boost/scope_exit.hpp"
-#include "boost/scoped_ptr.hpp"
-#include "boost/thread/once.hpp"
+#include <boost/scope_exit.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/thread/once.hpp>
 
 // cef
 #include "include/cef_client.h"
@@ -34,6 +34,19 @@ namespace ibrowser
 		IBrowserHandler();
 		~IBrowserHandler();
 
+	public : // static member -- single instance
+		static void Init()
+		{
+			m_instance_ptr = new IBrowserHandler();
+		}
+
+		static CefRefPtr<ibrowser::IBrowserHandler> getCurrentIBrowserHandler()
+		{
+			boost::call_once(ibrowser::IBrowserHandler::Init, m_once_flag);
+			return m_instance_ptr;
+		}
+
+	public :
 		/*
 		 * @brief : cef inherit
 		 */
@@ -89,6 +102,10 @@ namespace ibrowser
 		// Returns the startup URL.
 		inline std::string							GetStartupURL();
 		inline bool									IsClosing();
+
+	private : // static member
+		static CefRefPtr<ibrowser::IBrowserHandler>	m_instance_ptr;
+		static boost::once_flag						m_once_flag;
 
 	private :
 		CefRefPtr<IBrowserHandler>					m_handler;

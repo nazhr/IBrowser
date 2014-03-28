@@ -45,8 +45,32 @@ namespace ibrowser
 	{
 		try
 		{
+			// add button
+			QPushButton *addbtn = new QPushButton("+");
+			addbtn->setStyleSheet("QPushButton \
+													{ \
+														background-color: PowderBlue; \
+														color: MediumPurple; \
+														font: bold 14px; \
+													}"
+									);
+			addbtn->setFixedSize(18, 18);
+			setCornerWidget(addbtn);
+
+			// signals connect
+			// connect(m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), this, SLOT(slot_tabDrag(int, QPoint)));  
+			// close tab page siginal
+			connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_closeTab(int)));  
+			// mouse click tab page set current tab page siginal
+			connect(this, SIGNAL(currentChanged(int)), this, SLOT(setCurrentIndex(int)));
+			// new tab page set current tab page siginal
+			connect(this, SIGNAL(SenderCurrentIndex(int)), this,SLOT(setCurrentIndex(int)));
+			// new tab page siginal
+			connect(addbtn, SIGNAL(released()), this,SLOT(AddTabPage()));
+			
+			// add tab page
 			IBWidget *m_subWidget = new IBWidget();
-			this->addTab(m_subWidget, "page");
+			this->addTab(m_subWidget, "New Page");
 			HWND browserHWnd = m_subWidget->winId();
 			std::string default_url = "www.google.com.hk";
 			
@@ -59,6 +83,19 @@ namespace ibrowser
 			m_qmess.setText(e.what());
 			m_qmess.show();
 		}
+	}
+
+	void IBrowserTabWidget::AddTabPage()
+	{
+		IBWidget *m_subWidget = new IBWidget();
+		this->addTab(m_subWidget, "New Page");
+		HWND browserHWnd = m_subWidget->winId();
+		std::string default_url = "about:blank";
+		m_client->CreateBrowser(browserHWnd, default_url);
+
+		// set current tab page
+		int index = currentIndex();
+		emit SenderCurrentIndex(index + 1);
 	}
 
 	// Qt Slots
@@ -109,16 +146,14 @@ namespace ibrowser
 	void IBrowserTabWidget::Slot_closeTab(int index)  
 	{  
 		QWidget		*draged = widget(index);  
+		m_client->CloseBrowser();
 		removeTab(index);  
 		delete		draged;
 		int counts = count();
 		if(!counts)
 		{
-			// m_parent->close();
-			// this->close();
-			exit(0);
+			m_parent->close();
 		}
-
 	}
 	
 }

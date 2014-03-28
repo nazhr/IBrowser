@@ -10,25 +10,30 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/global.h"
 #include "ibrowser/ibrowserhandler.h"
+#include "ibrowser/global.h"
 
 // vc
 #include <sstream>
 #include <string>
 
 // cef
-#include "include/utils/util.h"
-#include "include/cef_app.h"
-#include "include/cef_runnable.h"
+#include <include/utils/util.h>
+#include <include/cef_app.h>
+#include <include/cef_runnable.h>
 
-// boost
-#include "boost/scope_exit.hpp"
-#include "boost/scoped_ptr.hpp"
-#include "boost/thread/once.hpp"
+//boost
+#include <boost/scope_exit.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/thread/once.hpp>
 
 namespace ibrowser 
 {
+	// static member init
+	CefRefPtr<ibrowser::IBrowserHandler>	IBrowserHandler::m_instance_ptr = NULL;
+	boost::once_flag						IBrowserHandler::m_once_flag = BOOST_ONCE_INIT;
+
+	// co
 	IBrowserHandler::IBrowserHandler() 
 		:	m_mainhwnd(NULL), 
 			m_browser(NULL),

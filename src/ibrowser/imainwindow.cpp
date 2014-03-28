@@ -12,6 +12,7 @@
 // ibrowser
 #include "ibrowser/global.h"
 #include "ibrowser/imainwindow.h"
+#include "ibrowser/ibrowserhandler.h"
 #include "ibrowser/ibrowsersingle.h"
 
 // Qt
@@ -22,10 +23,6 @@
 // cef
 #include <include/cef_base.h>
 #include <include/utils/resource.h>
-
-// static 
-boost::scoped_ptr<IMainwindow>		IMainwindow::m_instance_prt(0);
-boost::once_flag					IMainwindow::m_once_flag = BOOST_ONCE_INIT;
 
 IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 	:	QMainWindow(parent, flags), 
@@ -43,12 +40,6 @@ IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 	
 	// set main window's sub window tab page(tabwidget)
 	setCentralWidget(m_tabWidget.get());  
-
-	// set event link
-	connect(m_tabWidget->m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), m_tabWidget.get(), SLOT(slot_tabDrag(int, QPoint)));  
-	connect(m_tabWidget.get(), SIGNAL(tabCloseRequested(int)), m_tabWidget.get(), SLOT(Slot_closeTab(int)));  
-	connect(m_tabWidget.get(), SIGNAL(currentChanged(int)), m_tabWidget.get(), SLOT(setCurrentIndex(int)));
-
 
 	// m_ui.setupUi(this);
 	resize(880, 600);
@@ -86,18 +77,12 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 {
 	try
 	{
-		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
-			::Instance().getCurrentIBrowserHandler();
-		if(handler.get() && !handler->IsClosing())
+		CefRefPtr<ibrowser::IBrowserHandler>	handler = ibrowser::IBrowserHandler::getCurrentIBrowserHandler();
+		if(handler.get())
 		{
-			CefRefPtr<CefBrowser>				browser = handler->GetBrowser();
-			if(browser.get())
-			{
-				browser->GetHost()->CloseBrowser(false);
-				CefQuitMessageLoop();
-				// this->close();
-				exit(0);
-			}
+			handler->CloseAllBrowsers(true);
+			CefQuitMessageLoop();
+			exit(0);
 		}
 	}
 	catch(std::exception &e)
@@ -112,6 +97,7 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 {
 	try
 	{
+		// CefRefPtr<ibrowser::IBrowserHandler>	handler = ibrowser::IBrowserHandler::getCurrentIBrowserHandler();
 		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
 			::Instance().getCurrentIBrowserHandler();
 		if(handler.get() && !handler->IsClosing())
