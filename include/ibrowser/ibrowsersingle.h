@@ -49,7 +49,7 @@ public :
 		m_ibrowser_sinlge.reset(new IBrowserSingle);
 	}
 
-	IBrowserApp* getCurrentIBrowserApp()
+	IBrowserApp* GetCurrentIBrowserApp()
 	{
 		return m_ibrowser_app.get();
 	}
@@ -59,12 +59,12 @@ public :
 		return m_ibrowser_client.get();	
 	}*/
 
-	ibrowser::IBrowserHandler* getCurrentIBrowserHandler()
+	ibrowser::IBrowserHandler* GetCurrentIBrowserHandler()
 	{
 		return m_ibrowser_handler.get();	
 	}
 
-	void setCurrentIBrowserHandler(ibrowser::IBrowserHandler *handler)
+	void SetCurrentIBrowserHandler(ibrowser::IBrowserHandler *handler)
 	{
 		// m_ibrowser_handler->Release();
 		m_ibrowser_handler = handler;

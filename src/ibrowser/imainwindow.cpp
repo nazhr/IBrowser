@@ -12,7 +12,6 @@
 // ibrowser
 #include "ibrowser/global.h"
 #include "ibrowser/imainwindow.h"
-#include "ibrowser/ibrowserhandler.h"
 #include "ibrowser/ibrowsersingle.h"
 
 // Qt
@@ -77,7 +76,8 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 {
 	try
 	{
-		CefRefPtr<ibrowser::IBrowserHandler>	handler = ibrowser::IBrowserHandler::getCurrentIBrowserHandler();
+		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
+			::Instance().GetCurrentIBrowserHandler();
 		if(handler.get())
 		{
 			handler->CloseAllBrowsers(true);
@@ -97,9 +97,8 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 {
 	try
 	{
-		// CefRefPtr<ibrowser::IBrowserHandler>	handler = ibrowser::IBrowserHandler::getCurrentIBrowserHandler();
 		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
-			::Instance().getCurrentIBrowserHandler();
+			::Instance().GetCurrentIBrowserHandler();
 		if(handler.get() && !handler->IsClosing())
 		{
 			CefRefPtr<CefBrowser>				browser = handler->GetBrowser();
@@ -110,7 +109,7 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 				CefWindowHandle					hwnd = browser->GetHost()->GetWindowHandle();
 				if(hwnd)
 				{
-					HDWP							hdwp = ::BeginDeferWindowPos(1);
+					HDWP						hdwp = ::BeginDeferWindowPos(1);
 					DeferWindowPos(hdwp, hwnd, NULL, 
 						0, URLBAR_HEIGHT, size.width(), size.height() - URLBAR_HEIGHT, 
 						SWP_NOZORDER);

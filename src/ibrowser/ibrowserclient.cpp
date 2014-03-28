@@ -58,7 +58,8 @@ namespace ibrowser
 
 			// init ibrowser handler
 			// ibrowser and cef handler
-			CefRefPtr<ibrowser::IBrowserHandler> handler = IBrowserHandler::getCurrentIBrowserHandler();
+			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
+			IBrowserSingle::Instance().SetCurrentIBrowserHandler(handler.get());
 			// create borwser
 			CreateBrowser(hWnd, url);
 			
@@ -84,8 +85,8 @@ namespace ibrowser
 		try
 		{
 			// ibrowser and cef handler
-			CefRefPtr<ibrowser::IBrowserHandler> handler = IBrowserHandler::getCurrentIBrowserHandler();
-			IBrowserSingle::Instance().setCurrentIBrowserHandler(handler.get());
+			CefRefPtr<ibrowser::IBrowserHandler> handler = IBrowserSingle
+				::Instance().GetCurrentIBrowserHandler();
 
 			RECT		rect_tab;
 			// HWND		parent_hWnd = m_parent->winId();
@@ -117,7 +118,8 @@ namespace ibrowser
 
 	void IBrowserClient::CloseBrowser()
 	{
-		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserHandler::getCurrentIBrowserHandler();
+		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
+			::Instance().GetCurrentIBrowserHandler();
 		if(handler.get())
 		{
 			CefRefPtr<CefBrowser>				browser = handler->GetBrowser();
@@ -130,7 +132,8 @@ namespace ibrowser
 
 	bool IBrowserClient::BrowserLoadUrl(const std::wstring &url)
 	{
-		IBrowserHandler				*handler = IBrowserHandler::getCurrentIBrowserHandler();
+		IBrowserHandler				*handler = IBrowserSingle
+			::Instance().GetCurrentIBrowserHandler();
 		if(!url.empty() && handler)
 		{
 			CefRefPtr<CefBrowser>	browser = handler->GetBrowser();

@@ -29,10 +29,6 @@
 
 namespace ibrowser 
 {
-	// static member init
-	CefRefPtr<ibrowser::IBrowserHandler>	IBrowserHandler::m_instance_ptr = NULL;
-	boost::once_flag						IBrowserHandler::m_once_flag = BOOST_ONCE_INIT;
-
 	// co
 	IBrowserHandler::IBrowserHandler() 
 		:	m_mainhwnd(NULL), 
