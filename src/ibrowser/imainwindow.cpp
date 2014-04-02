@@ -41,7 +41,7 @@ IMainwindow::IMainwindow(QWidget *parent, Qt::WFlags flags)
 	setCentralWidget(m_tabWidget.get());  
 
 	// m_ui.setupUi(this);
-	resize(880, 600);
+	resize(800, 600);
 	setWindowTitle(QApplication::translate("IBrowser", "IBrowser"));
 
 	// 启动过滤器
@@ -97,6 +97,14 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 {
 	try
 	{
+		// get window size
+		QSize							size;
+		size = event->size();
+
+		// set tab widget size
+		m_tabWidget->resize(size);
+
+		// set browser window size
 		CefRefPtr<ibrowser::IBrowserHandler>	handler = IBrowserSingle
 			::Instance().GetCurrentIBrowserHandler();
 		if(handler.get() && !handler->IsClosing())
@@ -104,8 +112,6 @@ void IMainwindow::resizeEvent(QResizeEvent *event)
 			CefRefPtr<CefBrowser>				browser = handler->GetBrowser();
 			if(browser.get())
 			{
-				QSize							size;
-				size = event->size();
 				CefWindowHandle					hwnd = browser->GetHost()->GetWindowHandle();
 				if(hwnd)
 				{

@@ -69,10 +69,11 @@ namespace ibrowser
 			connect(addbtn, SIGNAL(released()), this,SLOT(AddTabPage()));
 			
 			// add tab page
-			QSharedPointer<IBWidget>	m_subWidget = QSharedPointer<IBWidget>(new IBWidget());
-			m_widgetList_.push_back(m_subWidget);
-			this->addTab(m_subWidget.data(), "New Page");
-			HWND						browserHWnd = m_subWidget->winId();
+			QSharedPointer<IBWidget>	subWidget = QSharedPointer<IBWidget>(new IBWidget());
+			m_widgetList_.push_back(subWidget);
+			subWidget->resize(this->size());
+			this->addTab(subWidget.data(), "New Page");
+			HWND						browserHWnd = subWidget->winId();
 			std::string					default_url = "www.google.com.hk";
 			
 			m_parent->show();
@@ -88,17 +89,18 @@ namespace ibrowser
 
 	void IBrowserTabWidget::AddTabPage()
 	{
-		QSharedPointer<IBWidget>	m_subWidget = QSharedPointer<IBWidget>(new IBWidget());
-		m_widgetList_.push_back(m_subWidget);
-		this->addTab(m_subWidget.data(), "New Page");
-		HWND						browserHWnd = m_subWidget->winId();
+		QSharedPointer<IBWidget>	subWidget = QSharedPointer<IBWidget>(new IBWidget());
+		m_widgetList_.push_back(subWidget);
+		subWidget->resize(this->size());
+		this->addTab(subWidget.data(), "New Page");
+		HWND						browserHWnd = subWidget->winId();
 		std::string					default_url = "about:blank";
 		m_client->CreateBrowser(browserHWnd, default_url);
 
 		// set current tab page
 		int							index = currentIndex();
 		emit SenderCurrentIndex(index + 1);
-		m_subWidget->SetBrowserId(index);
+		subWidget->SetBrowserId(index);
 	}
 
 	// Qt Slots
