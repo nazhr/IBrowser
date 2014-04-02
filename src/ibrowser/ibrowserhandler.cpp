@@ -113,7 +113,7 @@ namespace ibrowser
 			// Set a flag to indicate that the window close should be allowed.
 			m_bIsClosing = true;
 		}
-		return false;
+		return m_bIsClosing;
 	}
 
 	void IBrowserHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) 
@@ -123,7 +123,9 @@ namespace ibrowser
 		if(m_browserId == browser->GetIdentifier())
 		{
 			// Free the browser pointer so that the browser can be destroyed
-			m_browser = NULL;	
+			m_browser = NULL;
+			m_browserId = 0;
+			m_bIsClosing = false;
 		}
 		// Remove from the list of existing browsers.
 		BrowserList::iterator bit = browser_list_.begin();

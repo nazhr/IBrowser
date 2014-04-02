@@ -155,7 +155,7 @@ namespace ibrowser
 		int counts = count();
 		if(!counts)
 		{
-			m_parent->close();
+			// m_parent->close();
 		}
 	}
 	

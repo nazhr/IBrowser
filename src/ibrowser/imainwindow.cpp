@@ -81,7 +81,7 @@ void IMainwindow::closeEvent(QCloseEvent *event)
 		if(handler.get())
 		{
 			handler->CloseAllBrowsers(true);
-			CefQuitMessageLoop();
+			// CefQuitMessageLoop();
 			exit(0);
 		}
 	}
