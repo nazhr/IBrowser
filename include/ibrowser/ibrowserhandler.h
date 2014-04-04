@@ -89,6 +89,7 @@ namespace ibrowser
 							CefWindowHandle reloadHwnd,
 							CefWindowHandle stopHwnd);
 		inline CefRefPtr<CefBrowser>				GetBrowser();
+		CefRefPtr<CefBrowser>						GetBrowser(HWND hwnd);
 		inline CefRefPtr<IBrowserHandler>			GetCefPtrHandler();
 		inline void									SetMainBrowser(CefBrowser *browser);
 		// Returns the startup URL.

@@ -203,4 +203,21 @@ namespace ibrowser
 			m_stopHwnd = stopHwnd;
 	}
 
+	CefRefPtr<CefBrowser> IBrowserHandler::GetBrowser(HWND hwnd)
+	{
+		BrowserList::iterator itor = browser_list_.begin();
+		for( ; itor != browser_list_.end(); itor++)
+		{
+			CefRefPtr<CefBrowser>	browser = *itor;
+			HWND					ib_hwnd = browser->GetHost()->GetWindowHandle();
+			long					ib_index = ::GetWindowLong(ib_hwnd, GWL_ID);
+			long					index = ::GetWindowLong(hwnd, GWL_ID);
+			if(ib_index == index)
+			{
+				return browser;
+			}
+		}
+		return NULL;
+	}
+
 }
