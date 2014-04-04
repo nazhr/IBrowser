@@ -16,6 +16,7 @@
 #include "ibrowser/ibrowserclient.h"
 #include "ibrowser/ibtabbar.h"
 #include "ibrowser/ibwidget.h"
+#include "ibrowser/signalsslots.h"
 
 // cef
 #include <include/cef_app.h>
@@ -29,6 +30,9 @@
 #include <QtGui/QTabWidget>
 #include <QtCore/QList>
 #include <QtCore/QSharedPointer>
+
+// vc
+#include <string>
 
 namespace ibrowser
 {
@@ -47,6 +51,9 @@ namespace ibrowser
 	public :
 		IBTabBar		*m_ibtabbar;
 
+	private : // connect signals and slots
+		void InitConnect();
+
 	signals : // default signals
 		void SenderCurrentIndex(int);
 
@@ -55,6 +62,7 @@ namespace ibrowser
 		// virtual void Slot_tabDrag(int index, QPoint point); 
 		virtual void Slot_closeTab(int);
 		virtual void AddTabPage();
+		virtual void SetTabTittle(std::string);
 
 	private : // non static member 
 		QWidget										*m_parent;
@@ -62,6 +70,7 @@ namespace ibrowser
 		boost::scoped_ptr<ibrowser::IBrowserClient>	m_client;
 		typedef QList<QSharedPointer<IBWidget> >	m_widgetList;
 		m_widgetList								m_widgetList_;
+		QSharedPointer<QPushButton>					m_addbtn;
 
 	private : // static member 
 		

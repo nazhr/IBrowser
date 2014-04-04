@@ -15,7 +15,6 @@
 
 // vc
 #include <sstream>
-#include <string>
 
 // cef
 #include <include/utils/util.h>
@@ -80,7 +79,8 @@ namespace ibrowser
 
 		if(m_browserId == browser->GetIdentifier() && frame->IsMain())
 		{
-			::SetWindowText(m_editHwnd, std::wstring(url).c_str());
+			// ::SetWindowText(m_editHwnd, std::wstring(url).c_str());
+			SignalsSlots::GetCurrentSignals()->SetCurrentTittle(url.ToString());
 		}
 	}
 
@@ -94,7 +94,8 @@ namespace ibrowser
 		{
 			hwnd = ::GetParent(::GetParent(hwnd));
 		}
-		::SetWindowText(hwnd, std::wstring(title).c_str());
+		// ::SetWindowText(hwnd, std::wstring(title).c_str());
+		SignalsSlots::GetCurrentSignals()->SetCurrentTittle(title.ToString());
 	}
 
 	bool IBrowserHandler::DoClose(CefRefPtr<CefBrowser> browser)

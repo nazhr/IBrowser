@@ -60,6 +60,7 @@ namespace ibrowser
 			// ibrowser and cef handler
 			CefRefPtr<ibrowser::IBrowserHandler> handler = new IBrowserHandler();
 			IBrowserSingle::Instance().SetCurrentIBrowserHandler(handler.get());
+
 			// create borwser
 			CreateBrowser(hWnd, url);
 			

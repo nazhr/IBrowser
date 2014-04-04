@@ -27,17 +27,20 @@ set(IBR_SRCS
 	ibrowsertabwidget.cpp
 	ibtabbar.cpp
 	ibwidget.cpp
+	signalsslots.cpp
    )
 
 SET(IBROWSER_SOURCES 	imainwindow.cpp
 						ibrowsertabwidget.cpp
 						ibtabbar.cpp
-						ibwidget.cpp) 
+						ibwidget.cpp 
+						signalsslots.cpp) 
 						
 SET(IBROWSER_HEADERS 	${IBROWSER_SOURCE_DIR}/include/ibrowser/imainwindow.h
 						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibrowsertabwidget.h
 						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibtabbar.h 
-						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibwidget.h) 
+						${IBROWSER_SOURCE_DIR}/include/ibrowser/ibwidget.h 
+						${IBROWSER_SOURCE_DIR}/include/ibrowser/signalsslots.h) 
 						
 SET(IBROWSER_FORMS 		ibrowser.ui) 
 SET(IBROWSER_RESOURCES 	ibrowser.qrc) 

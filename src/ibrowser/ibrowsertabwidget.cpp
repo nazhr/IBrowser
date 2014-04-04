@@ -46,27 +46,19 @@ namespace ibrowser
 		try
 		{
 			// add button
-			QPushButton *addbtn = new QPushButton("+");
-			addbtn->setStyleSheet("QPushButton \
+			m_addbtn = QSharedPointer<QPushButton>(new QPushButton("+"));
+			m_addbtn->setStyleSheet("QPushButton \
 													{ \
 														background-color: PowderBlue; \
 														color: MediumPurple; \
 														font: bold 14px; \
 													}"
 									);
-			addbtn->setFixedSize(18, 18);
-			setCornerWidget(addbtn);
+			m_addbtn->setFixedSize(18, 18);
+			setCornerWidget(m_addbtn.data());
 
 			// signals connect
-			// connect(m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), this, SLOT(slot_tabDrag(int, QPoint)));  
-			// close tab page siginal
-			connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_closeTab(int)));  
-			// mouse click tab page set current tab page siginal
-			connect(this, SIGNAL(currentChanged(int)), this, SLOT(setCurrentIndex(int)));
-			// new tab page set current tab page siginal
-			connect(this, SIGNAL(SenderCurrentIndex(int)), this,SLOT(setCurrentIndex(int)));
-			// new tab page siginal
-			connect(addbtn, SIGNAL(released()), this,SLOT(AddTabPage()));
+			InitConnect();
 			
 			// add tab page
 			QSharedPointer<IBWidget>	subWidget = QSharedPointer<IBWidget>(new IBWidget());
@@ -74,7 +66,7 @@ namespace ibrowser
 			subWidget->resize(this->size());
 			this->addTab(subWidget.data(), "New Page");
 			HWND						browserHWnd = subWidget->winId();
-			std::string					default_url = "www.google.com.hk";
+			std::string					default_url = "about:blank";
 			
 			m_parent->show();
 			m_client->Initialize(browserHWnd, default_url);
@@ -85,6 +77,38 @@ namespace ibrowser
 			m_qmess.setText(e.what());
 			m_qmess.show();
 		}
+	}
+
+	void IBrowserTabWidget::InitConnect()
+	{
+		try
+		{
+			// signals connect
+			// connect(m_ibtabbar, SIGNAL(sig_tabDrag(int, QPoint)), this, SLOT(slot_tabDrag(int, QPoint)));  
+			// close tab page siginal
+			connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_closeTab(int)));  
+			// mouse click tab page set current tab page siginal
+			connect(this, SIGNAL(currentChanged(int)), this, SLOT(setCurrentIndex(int)));
+			// new tab page set current tab page siginal
+			connect(this, SIGNAL(SenderCurrentIndex(int)), this,SLOT(setCurrentIndex(int)));
+			// new tab page siginal
+			connect(m_addbtn.data(), SIGNAL(released()), this,SLOT(AddTabPage()));
+			// set current tab title
+			connect(SignalsSlots::GetCurrentSignals(), SIGNAL(CurrentTittle(std::string)), 
+				this, SLOT(SetTabTittle(std::string)));
+		}
+		catch(std::exception &e)
+		{
+			m_qmess.setText(e.what());
+			m_qmess.show();
+		}
+	}
+
+	void IBrowserTabWidget::SetTabTittle(std::string tittle)
+	{
+		// string utf8 to qt code utf8
+		QString		text = QString::fromUtf8(tittle.c_str());
+		setTabText(currentIndex(), text);
 	}
 
 	void IBrowserTabWidget::AddTabPage()

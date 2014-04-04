@@ -12,23 +12,27 @@
 #ifndef R_IBROWSER_IBROWSERHANDLER_H
 #define R_IBROWSER_IBROWSERHANDLER_H
 
+// ibrowser
+#include "ibrowser/signalsslots.h"
+
 //boost
 #include <boost/scope_exit.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/once.hpp>
 
 // cef
-#include "include/cef_client.h"
+#include <include/cef_client.h>
 
 // vc
 #include <list>
+#include <string>
 
 namespace ibrowser 
 {
 	class IBrowserHandler : public CefClient,
 							public CefDisplayHandler,
 							public CefLifeSpanHandler,
-							public CefLoadHandler
+							public CefLoadHandler 
 	{
 	public:
 		IBrowserHandler();

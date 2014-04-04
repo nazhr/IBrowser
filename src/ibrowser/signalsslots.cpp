@@ -10,28 +10,23 @@
  ****************************************************************************/
 
 // ibrowser
-#include "ibrowser/global.h"
-#include "ibrowser/imainwindow.h"
-#include "ibrowser/ibrowserclient.h"
+#include "ibrowser/signalsslots.h"
 
-// vc
-#include <Windows.h>
-
-// Qt
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
-#include <QtGui/QCleanlooksStyle> 
-
-int main(int argc, char **argv)
+namespace ibrowser
 {
-	g_qApplication = new QApplication(argc, argv);
-	QApplication::setStyle(new QCleanlooksStyle);  
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+	// static member variable init
+	boost::once_flag							SignalsSlots::m_once_flag = BOOST_ONCE_INIT;
+	boost::scoped_ptr<ibrowser::SignalsSlots>	SignalsSlots::m_instance_ptr(0);
 
-	IMainwindow					parent;
-	parent.Initialize();
+	// Constructor function
+	SignalsSlots::SignalsSlots(){}
+	SignalsSlots::~SignalsSlots(){}
 
-	// result = g_qApplication->exec();
+	// public member function
+	void SignalsSlots::SetCurrentTittle(std::string tittle)
+	{
+		std::string title_temp = boost::locale::conv::utf_to_utf<char>(tittle);
+		emit CurrentTittle(title_temp);
+	}
 
-	return 1;
 }
